@@ -1,0 +1,19 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "server.js",
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "server.js"
+    }
+  ],
+  "env": {
+    "PORT": "5000",
+    "MONGO_URI": "mongodb+srv://shivanshunigam18111999:5CTWxnuh5rqpiZmI@cluster0.zkkqjjp.mongodb.net/todoauthlocal"
+  }
+}
