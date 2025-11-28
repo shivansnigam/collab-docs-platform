@@ -1,0 +1,35 @@
+/* workspace tree */
+.wf-tree-container {
+  padding: 8px;
+  background: transparent;
+  color: #e6eef8;
+  font-size: 14px;
+}
+.wf-tree-header {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:8px;
+}
+.wf-tree-loading,
+.wf-tree-empty {
+  padding: 12px;
+  color: #aab6c9;
+}
+.wf-tree-node { margin-bottom: 4px; }
+.wf-tree-row { display:flex; align-items:center; gap:6px; }
+.wf-tree-toggle {
+  background:transparent; border:0; color:inherit;
+  width:20px; text-align:center; cursor:pointer;
+}
+.wf-tree-spacer { display:inline-block; width:20px; }
+.wf-tree-title {
+  background:transparent; border:0; text-align:left; padding:2px 4px;
+  color:inherit; cursor:pointer; width:100%;
+}
+.wf-tree-title:hover { background: rgba(255,255,255,0.02); border-radius:4px; }
+.wf-tree-title-text { display:inline-block; max-width: 180px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; vertical-align:middle; }
+.wf-tree-meta { margin-left:6px; color:#8fa3bf; font-size:11px; vertical-align:middle; }
+.wf-tree-children { margin-top:6px; }
+.wf-tree-small { font-size:14px; color:#e6eef8; }
+.wf-tree-small button { color: inherit; }

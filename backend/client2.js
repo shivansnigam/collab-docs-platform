@@ -1,0 +1,12 @@
+import { io } from "socket.io-client";
+const REALTIME = "http://localhost:1234";
+const TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OTI1NDgyNjBkMTdhMTlkNzRlMTM5ZWYiLCJyb2xlcyI6WyJWaWV3ZXIiXSwiaWF0IjoxNzY0MDU3MTczLCJleHAiOjE3NjQwNTgwNzN9.0wVa-SZFvBQcLfDUBXZCuRnnak3iNFkmnexnMXQaMd4";
+const DOC_ID = "692560a25c4385fe93aeff9d";
+const NAME="client2";
+const socket = io(REALTIME);
+socket.on("connect",()=>{console.log(NAME,"connected",socket.id); socket.emit("join",{token:TOKEN,docId:DOC_ID});});
+socket.on("init",d=>console.log(NAME,"init",d));
+socket.on("doc:update",p=>console.log(NAME,"doc:update",p));
+socket.on("presence:update",p=>console.log(NAME,"presence",p));
+setTimeout(()=>{ socket.emit("doc:update",{docId:DOC_ID, delta:{snapshot:`Edited by ${NAME} ${new Date().toISOString()}`}}); },2000);
+setInterval(()=>socket.emit("cursor:update",{docId:DOC_ID, selection:{from:0,to:0}}),3000);

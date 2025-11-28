@@ -1,3 +1,4 @@
+// src/App.jsx
 import React, { useEffect, useState } from "react";
 import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 import Signup from "./pages/Signup";
@@ -7,6 +8,16 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import NavBar from "./components/NavBar";
 import LoginModal from "./components/LoginModal";
 import { getAccessToken } from "./services/auth.service";
+
+// Added imports for workspaces/documents pages
+import Workspaces from "./pages/Workspaces";
+import WorkspacePage from "./pages/WorkspacePage";
+import DocumentEditor from "./pages/DocumentEditor";
+import DocumentVersions from "./pages/DocumentVersions";
+import NewPage from "./pages/NewPage"; // NEW
+
+// <-- ADDED: analytics page import
+import AnalyticsPage from "./pages/Analytics";
 
 export default function App() {
   const [showLoginModal, setShowLoginModal] = useState(false);
@@ -36,6 +47,62 @@ export default function App() {
               </ProtectedRoute>
             }
           />
+
+          {/* Workspaces & Documents routes (protected) */}
+          <Route
+            path="/workspaces"
+            element={
+              <ProtectedRoute>
+                <Workspaces />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/workspaces/:id"
+            element={
+              <ProtectedRoute>
+                <WorkspacePage />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* NEW: route for creating a page from workspace (used by +New button) */}
+          <Route
+            path="/workspaces/:id/newpage"
+            element={
+              <ProtectedRoute>
+                <NewPage />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* <-- ADDED: Analytics route (workspace level) */}
+          <Route
+            path="/workspaces/:id/analytics"
+            element={
+              <ProtectedRoute>
+                <AnalyticsPage />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/documents/:id"
+            element={
+              <ProtectedRoute>
+                <DocumentEditor />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/documents/:id/versions"
+            element={
+              <ProtectedRoute>
+                <DocumentVersions />
+              </ProtectedRoute>
+            }
+          />
+
           <Route path="*" element={<div>Page not found</div>} />
         </Routes>
       </div>
