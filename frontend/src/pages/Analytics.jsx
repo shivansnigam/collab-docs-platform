@@ -66,25 +66,25 @@ export default function AnalyticsPage() {
       <div className="row mb-3">
         <div className="col-md-3 mb-2">
           <div className="card p-3">
-            <div className="text-muted small">Active users</div>
+            <div className=" small">Active users</div>
             <div style={{ fontSize: 22, fontWeight: 700 }}>{analytics?.activeUsersCount ?? 0}</div>
           </div>
         </div>
         <div className="col-md-3 mb-2">
           <div className="card p-3">
-            <div className="text-muted small">Total edits</div>
+            <div className=" small">Total edits</div>
             <div style={{ fontSize: 22, fontWeight: 700 }}>{analytics?.editsCount ?? 0}</div>
           </div>
         </div>
         <div className="col-md-3 mb-2">
           <div className="card p-3">
-            <div className="text-muted small">Comments</div>
+            <div className=" small">Comments</div>
             <div style={{ fontSize: 22, fontWeight: 700 }}>{analytics?.commentsCount ?? 0}</div>
           </div>
         </div>
         <div className="col-md-3 mb-2">
           <div className="card p-3">
-            <div className="text-muted small">File uploads</div>
+            <div className=" small">File uploads</div>
             <div style={{ fontSize: 22, fontWeight: 700 }}>{analytics?.uploadsCount ?? 0}</div>
           </div>
         </div>
