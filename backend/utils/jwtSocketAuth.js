@@ -13,3 +13,4 @@ export async function getUserFromToken(token) {
     return null;
   }
 }
+
