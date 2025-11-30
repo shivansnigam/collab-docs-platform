@@ -9,7 +9,7 @@ import { socketHandler } from './socket/handler.js';
 const start = async () => {
   try {
     await connectDB();
-    const port = process.env.REALTIME_PORT || 1234;
+    const port = process.env.PORT;
     const server = http.createServer();
 
     const io = new Server(server, {

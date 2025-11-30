@@ -1,7 +1,7 @@
 // test-socket.js
 import { io } from "socket.io-client";
 
-const REALTIME_URL = "http://localhost:1234";
+const REALTIME_URL = "https://collab-docs-platform.onrender.com";
 const ACCESS_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OTI4MjI5MDI4MTk4MjRlMmExODJjNTQiLCJyb2xlcyI6WyJWaWV3ZXIiXSwiaWF0IjoxNzY0MjM4OTgwLCJleHAiOjE3NjQyMzk4ODB9.mTMtkRaAPSonlzh3IL00SGJ_DYrj6Oy25b9IGzre6tU"; // paste your token
 const DOC_ID = "692823702819824e2a182c62";        // paste doc id
 const WORKSPACE_ID = "692823022819824e2a182c5b"; // paste workspace id
