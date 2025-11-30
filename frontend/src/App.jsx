@@ -19,15 +19,22 @@ import NewPage from "./pages/NewPage"; // NEW
 // <-- ADDED: analytics page import
 import AnalyticsPage from "./pages/Analytics";
 
+// <-- ADDED: Landing page import
+import LandingPage from "./pages/LandingPage";
+
 export default function App() {
   const [showLoginModal, setShowLoginModal] = useState(false);
   const location = useLocation();
 
   useEffect(() => {
-    // Agar user logged out hai aur root ya login route visit kar raha hai -> modal khol do
     const token = getAccessToken();
     const onRoot = location.pathname === "/" || location.pathname === "/login";
-    if (!token && onRoot) setShowLoginModal(true);
+
+    if (!token && onRoot) {
+      // Delay (ms) — 60000 = 60s. Agar chaho kam/zyada kar sakte ho.
+      const timer = setTimeout(() => setShowLoginModal(true), 4000);
+      return () => clearTimeout(timer);
+    }
   }, [location]);
 
   return (
@@ -36,7 +43,9 @@ export default function App() {
       <LoginModal show={showLoginModal} onClose={() => setShowLoginModal(false)} />
       <div className="container mt-4">
         <Routes>
-          <Route path="/" element={<Navigate to="/dashboard" replace />} />
+          {/* Root ab LandingPage dikhayega; LandingPage onAutoShow se modal open karwa sakta hai */}
+          <Route path="/" element={<LandingPage onAutoShow={() => setShowLoginModal(true)} />} />
+
           <Route path="/signup" element={<Signup />} />
           <Route path="/oauth-success" element={<OAuthSuccess />} />
           <Route

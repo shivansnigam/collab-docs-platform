@@ -151,7 +151,7 @@ export default function Dashboard() {
           <>
             {workspaces.length === 0 ? (
               <div className="alert alert-secondary">
-                Create New Workspace
+                Create Your Next Workspace
               </div>
             ) : (
               <div className="row">
