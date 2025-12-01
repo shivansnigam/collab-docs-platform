@@ -2,7 +2,7 @@
 
 import File from '../models/File.js';
 import { getPresignedPutUrl, getPresignedGetUrl, s3 } from '../lib/s3Client.js';
-import { PutObjectCommand } from '@aws-sdk/client-s3';
+import { PutObjectCommand, HeadObjectCommand } from '@aws-sdk/client-s3';
 import { nanoid } from 'nanoid';
 import * as analytics from '../services/analytics.service.js'; // <-- added for analytics tracking
 
@@ -105,6 +105,58 @@ export const getSignedUrlForFile = async (req, res, next) => {
 
     const url = await getPresignedGetUrl(process.env.S3_BUCKET, file.storageKey, parseInt(process.env.S3_PRESIGN_EXPIRES || '300'));
     return res.json({ url, expiresIn: parseInt(process.env.S3_PRESIGN_EXPIRES || '300') });
+  } catch (err) {
+    next(err);
+  }
+};
+
+// 4) Confirm upload (client calls this AFTER successful client->S3 upload)
+//    This updates the DB record from 'pending' -> 'uploaded', verifies the object exists in S3,
+//    and increments analytics counters. Frontend should call this once upload to S3 succeeds.
+export const confirmUpload = async (req, res, next) => {
+  try {
+    const { fileId, storageKey, workspaceId, documentId, size } = req.body;
+
+    if (!fileId && !storageKey) return res.status(400).json({ message: 'fileId or storageKey required' });
+
+    // locate the DB record
+    let fileDoc = null;
+    if (fileId) fileDoc = await File.findById(fileId);
+    if (!fileDoc && storageKey) fileDoc = await File.findOne({ storageKey });
+    if (!fileDoc) return res.status(404).json({ message: 'File record not found' });
+
+    // verify object exists in S3 (HeadObject)
+    try {
+      await s3.send(new HeadObjectCommand({ Bucket: BUCKET, Key: fileDoc.storageKey }));
+    } catch (headErr) {
+      // if object doesn't exist, inform client
+      console.error('S3 HeadObject error verifying uploaded object', headErr);
+      return res.status(400).json({ message: 'Uploaded object not found in storage' });
+    }
+
+    // update DB record
+    fileDoc.status = 'uploaded';
+    if (workspaceId) fileDoc.workspace = workspaceId;
+    if (documentId) fileDoc.document = documentId;
+    if (size) fileDoc.size = size;
+    await fileDoc.save();
+
+    // analytics: increment uploads count (workspace-level) and record activity
+    try {
+      const wsId = fileDoc.workspace || workspaceId || null;
+      if (wsId) {
+        await analytics.incUploads(wsId, req.user.userId, fileDoc.document || documentId || null, fileDoc._id, 1);
+      } else {
+        await analytics.pushActivity({ workspaceId: null, docId: fileDoc.document || documentId || null, userId: req.user.userId, action: 'upload', meta: { fileId: fileDoc._id } });
+      }
+    } catch (e) {
+      console.error('analytics.confirmUpload error', e);
+    }
+
+    // return updated record (and optional GET URL)
+    const getUrl = await getPresignedGetUrl(BUCKET, fileDoc.storageKey, parseInt(process.env.S3_PRESIGN_EXPIRES || '300'));
+
+    return res.status(200).json({ file: fileDoc, url: getUrl });
   } catch (err) {
     next(err);
   }

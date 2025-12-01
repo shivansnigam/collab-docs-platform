@@ -647,7 +647,8 @@ export default function DocumentEditor() {
   const onFileChange = async (e) => {
     const f = e.target.files?.[0];
     if (!f) return;
-    const workspaceId = doc?.workspace?._id || null;
+    const workspaceId = doc?.workspace?._id || doc?.workspace || null;
+
     const documentId = id || null;
 
     try {

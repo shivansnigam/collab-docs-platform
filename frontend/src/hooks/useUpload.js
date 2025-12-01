@@ -1,6 +1,5 @@
-// src/hooks/useUpload.js
 import { useState } from "react";
-import { signUpload, proxyUpload, getSignedUrl } from "../services/upload.service";
+import { signUpload, proxyUpload, getSignedUrl, confirmUpload } from "../services/upload.service";
 
 /**
  * useUpload hook
@@ -28,6 +27,7 @@ export default function useUpload() {
       });
 
       const fileId = signResp.file?.id;
+      const storageKey = signResp.file?.storageKey;
       const uploadUrl = signResp.uploadUrl;
 
       if (!uploadUrl) {
@@ -36,7 +36,9 @@ export default function useUpload() {
       }
 
       // 2) PUT to S3 (use fetch so we can set Content-Type exactly)
-      // Note: we cannot reliably get progress with fetch; for big files you may use XHR.
+      // Note: fetch doesn't provide progress events; we update coarse progress
+      setProgress(5);
+
       const putResp = await fetch(uploadUrl, {
         method: "PUT",
         headers: {
@@ -50,20 +52,55 @@ export default function useUpload() {
         throw new Error(`S3 upload failed: ${putResp.status}`);
       }
 
-      setProgress(90);
+      setProgress(70);
 
-      // 3) ask backend for a fresh GET signed URL to display the uploaded object
-      if (!fileId) {
-        // defensive: if backend didn't create DB record, fallback to proxy
-        throw new Error("Missing file id from sign response");
+      // 3) Confirm upload with backend so server updates DB status and analytics
+      try {
+        // prefer fileId + storageKey; if fileId missing, still send storageKey
+        const confirmPayload = {
+          fileId: fileId || undefined,
+          storageKey: storageKey || undefined,
+          workspaceId: workspaceId || undefined,
+          documentId: documentId || undefined,
+          size: file.size || undefined
+        };
+        const confirmResp = await confirmUpload(confirmPayload);
+
+        // confirm endpoint returns { file, url } per server implementation
+        if (confirmResp && confirmResp.url) {
+          setProgress(100);
+          setUploading(false);
+          return { file: confirmResp.file || signResp.file, url: confirmResp.url };
+        }
+
+        // defensive fallback: if confirm didn't return url, try getSignedUrl
+        if (fileId) {
+          const getResp = await getSignedUrl(fileId);
+          setProgress(100);
+          setUploading(false);
+          return { file: signResp.file, url: getResp.url };
+        }
+
+        // last resort: return signResp without a usable url
+        setProgress(100);
+        setUploading(false);
+        return { file: signResp.file, url: null };
+      } catch (confirmErr) {
+        // if confirm failed, try to still get signed GET url (best-effort)
+        try {
+          if (fileId) {
+            const getResp = await getSignedUrl(fileId);
+            setProgress(100);
+            setUploading(false);
+            return { file: signResp.file, url: getResp.url };
+          }
+        } catch (getErr) {
+          // ignore and fallback to proxy below
+        }
+        throw confirmErr;
       }
-
-      const getResp = await getSignedUrl(fileId);
-      setProgress(100);
-      setUploading(false);
-      return { file: signResp.file, url: getResp.url };
     } catch (err) {
-      console.warn("Presign+PUT failed, trying proxy fallback:", err?.message || err);
+      console.warn("Presign+PUT+confirm failed, trying proxy fallback:", err?.message || err);
       // fallback: server-proxy upload via FormData (multer -> S3)
       try {
         const fd = new FormData();

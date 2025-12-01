@@ -1,4 +1,3 @@
-// src/services/upload.service.js
 import api from "./api";
 
 /**
@@ -22,3 +21,10 @@ export const proxyUpload = (formData) => api.post("/uploads", formData, {
  * returns { url, expiresIn }
  */
 export const getSignedUrl = (fileId) => api.get(`/uploads/${fileId}/signed-url`).then(r => r.data);
+
+/**
+ * Confirm upload with backend after successful client -> S3 PUT
+ * body: { fileId?, storageKey?, workspaceId?, documentId?, size? }
+ * returns { file, url }
+ */
+export const confirmUpload = (payload) => api.post("/uploads/confirm", payload).then(r => r.data);
