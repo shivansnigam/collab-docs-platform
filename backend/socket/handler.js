@@ -37,6 +37,15 @@ export function socketHandler(io, socket) {
         roles: user.roles
       };
 
+      // ⭐ NEW: join personal user room so server can emit per-user notifications
+      try {
+        const userRoom = `user:${socket.data.user.id}`;
+        socket.join(userRoom);
+        console.log(`socket ${socket.id} joined personal room ${userRoom}`);
+      } catch (e) {
+        console.error('failed to join user personal room', e);
+      }
+
       // store workspaceId on socket if provided (used on disconnect)
       if (workspaceId) {
         socket.data.workspaceId = workspaceId;

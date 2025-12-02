@@ -3,15 +3,12 @@ import React, { useEffect, useState } from "react";
 import api from "../services/api";
 import { useParams, useNavigate } from "react-router-dom";
 import WorkspaceTree from "../components/WorkspaceTree";
-import "../styles/workspace-tree.css"; // optional - import once
+import "../styles/workspace-tree.css";
 
-// small helper: safely render user name/email even if object/id
 function getUserName(user) {
   if (!user) return "";
   if (typeof user === "string") return user;
-  if (typeof user === "object") {
-    return user.name || user.email || String(user._id || "");
-  }
+  if (typeof user === "object") return user.name || user.email || String(user._id || "");
   return "";
 }
 
@@ -22,14 +19,13 @@ function getUserEmail(user) {
   return "";
 }
 
-// small UI helper for role badge
 function RoleBadge({ role }) {
   const base =
     {
       Viewer: { bg: "#e6f0ff", color: "#0b63d6" },
       Editor: { bg: "#fff7e6", color: "#c56b00" },
       Admin: { bg: "#ffe6f0", color: "#d0006f" },
-      Owner: { bg: "#e6fff2", color: "#007a4d" },
+      Owner: { bg: "#e6fff2", color: "#007a4d" }
     }[role] || { bg: "#f4f6f9", color: "#556" };
 
   return (
@@ -41,7 +37,7 @@ function RoleBadge({ role }) {
         borderRadius: 12,
         fontSize: 12,
         fontWeight: 600,
-        marginLeft: 8,
+        marginLeft: 8
       }}
     >
       {role}
@@ -62,7 +58,6 @@ export default function WorkspacePage() {
 
   useEffect(() => {
     load();
-    // eslint-disable-next-line
   }, [id]);
 
   const load = async () => {
@@ -70,43 +65,43 @@ export default function WorkspacePage() {
     try {
       const [wResp, dResp] = await Promise.all([
         api.get(`/workspaces/${id}`),
-        api.get(`/documents?workspaceId=${id}`),
+        api.get(`/documents?workspaceId=${id}`)
       ]);
       setWorkspace(wResp.data.workspace || wResp.data);
       setDocs(dResp.data.documents || dResp.data || []);
-    } catch (err) {
-      console.error(err);
-      alert(err?.response?.data?.message || "Could not load workspace");
+    } catch {
+      alert("Could not load workspace");
     } finally {
       setLoading(false);
     }
   };
 
-  const createDoc = async (e) => {
+  const createDoc = async e => {
     e.preventDefault();
     try {
       const tagsArr = (tags || "")
         .split(",")
-        .map((t) => t.trim())
+        .map(t => t.trim())
         .filter(Boolean);
+
       const resp = await api.post(`/documents/workspace/${id}`, {
         title,
         content: "# New Page",
         parent: parent || null,
-        tags: tagsArr,
+        tags: tagsArr
       });
+
       setShowCreateDoc(false);
       setTitle("");
       setParent("");
       setTags("");
       nav(`/documents/${resp.data.document._id}`);
-    } catch (err) {
-      console.error(err);
-      alert(err?.response?.data?.message || "Could not create document");
+    } catch {
+      alert("Could not create document");
     }
   };
 
-  const openDoc = (doc) => nav(`/documents/${doc._id}`);
+  const openDoc = doc => nav(`/documents/${doc._id}`);
 
   if (loading) {
     return (
@@ -115,6 +110,7 @@ export default function WorkspacePage() {
       </div>
     );
   }
+
   if (!workspace) {
     return <div className="container mt-4">Workspace not found</div>;
   }
@@ -133,28 +129,38 @@ export default function WorkspacePage() {
           <div style={{ fontSize: 17 }}>{safeDescription}</div>
         </div>
 
-        {/* top buttons */}
-        <div>
-          <button className="btn btn-outline-secondary me-2" onClick={load}>
+        {/* top actions */}
+        <div className="d-flex flex-wrap gap-2">
+          <button
+            className="btn btn-outline-secondary"
+            onClick={() => nav("/workspaces")}
+          >
+            Back
+          </button>
+
+          <button
+            className="btn btn-outline-secondary"
+            onClick={() => nav("/dashboard")}
+          >
+            Dashboard
+          </button>
+
+          <button className="btn btn-outline-secondary" onClick={load}>
             Refresh
           </button>
           <button
-            className="btn btn-outline-secondary me-2"
+            className="btn btn-outline-secondary"
             onClick={() => nav(`/workspaces/${id}/analytics`)}
           >
             Analytics
           </button>
-          <button
-            className="btn btn-primary"
-            onClick={() => setShowCreateDoc(true)}
-          >
+          <button className="btn btn-primary" onClick={() => setShowCreateDoc(true)}>
             + New Page
           </button>
         </div>
       </div>
 
       <div className="row">
-        {/* LEFT: sidebar (members + tree + activity) */}
         <div className="col-md-4">
           <div className="card p-3 mb-3" style={{ position: "sticky", top: 12 }}>
             <div className="d-flex justify-content-between align-items-start">
@@ -167,34 +173,24 @@ export default function WorkspacePage() {
             </div>
 
             <div style={{ marginTop: 12 }}>
-              <ul
-                style={{
-                  listStyle: "none",
-                  paddingLeft: 0,
-                  marginBottom: 0,
-                }}
-              >
-                {/* Owner row */}
+              <ul style={{ listStyle: "none", paddingLeft: 0, marginBottom: 0 }}>
                 <li
                   style={{
                     marginBottom: 8,
                     display: "flex",
                     justifyContent: "space-between",
-                    alignItems: "center",
+                    alignItems: "center"
                   }}
                 >
                   <div>
                     <div style={{ fontWeight: 700 }}>{ownerName}</div>
-                    <div style={{ fontSize: 16, color: "#90a0b6" }}>
-                      {ownerEmail}
-                    </div>
+                    <div style={{ fontSize: 16, color: "#90a0b6" }}>{ownerEmail}</div>
                   </div>
                   <div>
                     <RoleBadge role="Owner" />
                   </div>
                 </li>
 
-                {/* Other members */}
                 {workspace.members?.map((m, idx) => {
                   const memberName = getUserName(m.user);
                   const memberEmail = getUserEmail(m.user);
@@ -205,7 +201,7 @@ export default function WorkspacePage() {
                         marginBottom: 8,
                         display: "flex",
                         justifyContent: "space-between",
-                        alignItems: "center",
+                        alignItems: "center"
                       }}
                     >
                       <div>
@@ -223,43 +219,27 @@ export default function WorkspacePage() {
               </ul>
             </div>
 
-            <div
-              style={{
-                borderTop: "1px solid #eef2f6",
-                marginTop: 12,
-                paddingTop: 12,
-              }}
-            >
-              <InviteMember workspaceId={id} onAdded={load} />
-            </div>
+            <InviteMember workspaceId={id} onAdded={load} />
           </div>
 
           <div className="card p-3 mb-3">
-            <div className="d-flex justify-content-between align-items-center mb-2">
-              <strong>Pages</strong>
-            </div>
-            <div style={{ maxHeight: 380, overflow: "auto" }}>
+            <strong>Pages</strong>
+            <div style={{ marginTop: 8 }}>
               <WorkspaceTree workspaceId={id} onOpen={openDoc} />
             </div>
           </div>
 
           <div className="card p-3">
             <h6 style={{ marginBottom: 8 }}>Activity</h6>
-            <div style={{ fontSize: 16, color: "#6f7d8a" }}>
-              Recent actions in this workspace
-            </div>
+            <div style={{ fontSize: 16, color: "#6f7d8a" }}>Recent actions</div>
             <div style={{ marginTop: 10, fontSize: 16, color: "#495763" }}>
               {workspace.activity?.length ? (
                 <ul style={{ paddingLeft: 16 }}>
                   {workspace.activity.slice(0, 6).map((a, i) => (
                     <li key={i} style={{ marginBottom: 6 }}>
-                      <div style={{ fontWeight: 600 }}>
-                        {String(a.action || "")}
-                      </div>
+                      <div style={{ fontWeight: 600 }}>{String(a.action || "")}</div>
                       <div style={{ fontSize: 12, color: "#8091a2" }}>
-                        {a.createdAt
-                          ? new Date(a.createdAt).toLocaleString()
-                          : ""}
+                        {a.createdAt ? new Date(a.createdAt).toLocaleString() : ""}
                       </div>
                     </li>
                   ))}
@@ -271,13 +251,12 @@ export default function WorkspacePage() {
           </div>
         </div>
 
-        {/* RIGHT: main content */}
         <div className="col-md-8">
           <div className="card p-3 mb-3">
             <h5 style={{ marginBottom: 6 }}>Selected workspace actions</h5>
             <p style={{ marginBottom: 12 }}>
-              Open or create documents. Click a document in the left tree to
-              open editor.
+              Open or create documents. Click a document in the left tree to open
+              editor.
             </p>
             <div className="d-flex gap-2">
               <button
@@ -310,14 +289,13 @@ export default function WorkspacePage() {
         </div>
       </div>
 
-      {/* Create page modal */}
       {showCreateDoc && (
         <div
           className="wp-sx-modal-backdrop"
           role="dialog"
           aria-modal="true"
           aria-labelledby="wp-sx-title"
-          onClick={(e) => {
+          onClick={e => {
             if (e.target === e.currentTarget) setShowCreateDoc(false);
           }}
         >
@@ -347,7 +325,7 @@ export default function WorkspacePage() {
                     id="wp-sx-title"
                     className="wp-sx-input"
                     value={title}
-                    onChange={(e) => setTitle(e.target.value)}
+                    onChange={e => setTitle(e.target.value)}
                     required
                     autoFocus
                   />
@@ -361,7 +339,7 @@ export default function WorkspacePage() {
                     id="wp-sx-tags"
                     className="wp-sx-input"
                     value={tags}
-                    onChange={(e) => setTags(e.target.value)}
+                    onChange={e => setTags(e.target.value)}
                     placeholder="intro,getting-started"
                   />
                 </div>
@@ -374,10 +352,10 @@ export default function WorkspacePage() {
                     id="wp-sx-parent"
                     className="wp-sx-input"
                     value={parent}
-                    onChange={(e) => setParent(e.target.value)}
+                    onChange={e => setParent(e.target.value)}
                   >
                     <option value="">— none —</option>
-                    {docs.map((d) => (
+                    {docs.map(d => (
                       <option key={d._id} value={d._id}>
                         {d.title}
                       </option>
@@ -393,7 +371,6 @@ export default function WorkspacePage() {
                   >
                     Cancel
                   </button>
-
                   <button type="submit" className="wp-sx-btn wp-sx-primary">
                     Create
                   </button>
@@ -407,12 +384,11 @@ export default function WorkspacePage() {
   );
 }
 
-/* InviteMember component (same logic, slight safety only) */
 function InviteMember({ workspaceId, onAdded }) {
   const [email, setEmail] = useState("");
   const [role, setRole] = useState("Viewer");
 
-  const add = async (e) => {
+  const add = async e => {
     e.preventDefault();
     try {
       await api.post(`/workspaces/${workspaceId}/members`, { email, role });
@@ -420,9 +396,8 @@ function InviteMember({ workspaceId, onAdded }) {
       setRole("Viewer");
       onAdded?.();
       alert("Member added");
-    } catch (err) {
-      console.error(err);
-      alert(err?.response?.data?.message || "Could not add member");
+    } catch {
+      alert("Could not add member");
     }
   };
 
@@ -433,7 +408,7 @@ function InviteMember({ workspaceId, onAdded }) {
         <input
           className="form-control"
           value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          onChange={e => setEmail(e.target.value)}
           placeholder="user@example.com"
           required
         />
@@ -444,7 +419,7 @@ function InviteMember({ workspaceId, onAdded }) {
           <select
             className="form-select"
             value={role}
-            onChange={(e) => setRole(e.target.value)}
+            onChange={e => setRole(e.target.value)}
           >
             <option>Viewer</option>
             <option>Editor</option>

@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import api from "../services/api";
-import { setTokens } from "../services/auth.service";
+import { setTokens, getAccessToken } from "../services/auth.service";
 import { useNavigate } from "react-router-dom";
 
 export default function Signup() {
@@ -13,6 +13,14 @@ export default function Signup() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const nav = useNavigate();
+
+  // ✅ NEW: already logged-in user ko yahan aane nahi dena
+  useEffect(() => {
+    const token = getAccessToken();
+    if (token) {
+      nav("/dashboard", { replace: true });
+    }
+  }, [nav]);
 
   const submit = async (e) => {
     e.preventDefault();
@@ -161,7 +169,6 @@ export default function Signup() {
 
       <div className="sg-page">
         <div className="sg-card">
-          {/* LEFT FORM */}
           <div className="sg-left">
             <div className="sg-logo">A</div>
             <div className="sg-title">Create your account</div>
@@ -224,13 +231,11 @@ export default function Signup() {
             </div>
           </div>
 
-          {/* RIGHT SIDE */}
           <div className="sg-right">
             <div style={{ width: "100%", maxWidth: "240px" }}>
               <p className="sg-muted text-center mb-3">Sign up with social</p>
 
               <div className="d-grid gap-2">
-                {/* Google button */}
                 <a
                   href={`${import.meta.env.VITE_API_URL}/auth/google`}
                   className="btn btn-outline-light d-flex align-items-center justify-content-center gap-2 rounded-pill w-100 py-2"
@@ -254,7 +259,6 @@ export default function Signup() {
                   <span className="fw-semibold">Continue with Google</span>
                 </a>
 
-                {/* GitHub button */}
                 <a
                   href={`${import.meta.env.VITE_API_URL}/auth/github`}
                   className="btn btn-outline-light d-flex align-items-center justify-content-center gap-2 rounded-pill w-100 py-2"

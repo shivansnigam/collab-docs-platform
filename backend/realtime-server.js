@@ -6,10 +6,14 @@ import connectDB from './config/db.js';
 import { Server } from 'socket.io';
 import { socketHandler } from './socket/handler.js';
 
+// ⭐ NEW IMPORT — global io store
+import { setIo } from './socket/io.js';
+
 const start = async () => {
   try {
     await connectDB();
     const port = process.env.PORT;
+    //  const port = process.env.REALTIME_PORT;
     const server = http.createServer();
 
     const io = new Server(server, {
@@ -19,6 +23,9 @@ const start = async () => {
       },
       maxHttpBufferSize: 1e6
     });
+
+    // ⭐ NEW LINE — set io globally so notifications work everywhere
+    setIo(io);
 
     io.on('connection', (socket) => socketHandler(io, socket));
 

@@ -178,7 +178,7 @@ export default function DocumentVersions() {
 
               {/* right: actions */}
               <div style={{ display: "flex", flexDirection: "column", gap: 8, marginLeft: 12 }}>
-                <button className="btn btn-sm btn-outline-primary" style={{ minWidth: 92 }} onClick={() => preview(v)}>Preview</button>
+                
                 <button className="btn btn-sm btn-danger" style={{ minWidth: 92 }} onClick={() => restore(v._id)}>Restore</button>
               </div>
             </div>
