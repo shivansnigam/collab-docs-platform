@@ -12,7 +12,7 @@ export default function LoginModal({ show, onClose }) {
 
   useEffect(() => {
     document.body.style.overflow = show ? "hidden" : "";
-    // focus first input when open
+
     if (show) {
       setTimeout(() => {
         modalRef.current?.querySelector("input[name='email']")?.focus();
@@ -48,7 +48,8 @@ export default function LoginModal({ show, onClose }) {
     }
   };
 
-  const onChange = (e) => setForm((s) => ({ ...s, [e.target.name]: e.target.value }));
+  const onChange = (e) =>
+    setForm((s) => ({ ...s, [e.target.name]: e.target.value }));
 
   const openOAuth = (provider) => {
     const url = `${import.meta.env.VITE_API_URL}/auth/${provider}`;
@@ -193,14 +194,22 @@ export default function LoginModal({ show, onClose }) {
           }}
         />
 
-        <div className="cm-modal" ref={modalRef} role="dialog" aria-modal="true" aria-label="login dialog">
+        <div
+          className="cm-modal"
+          ref={modalRef}
+          role="dialog"
+          aria-modal="true"
+          aria-label="login dialog"
+        >
           {/* LEFT: form */}
           <div className="cm-left">
             <div className="cm-brand">
               <div className="cm-logo">A</div>
               <div>
                 <h3 className="cm-title">Welcome back</h3>
-                <div className="cm-sub">Sign in to continue — secure access</div>
+                <div className="cm-sub">
+                  Sign in to continue — secure access
+                </div>
               </div>
             </div>
 
@@ -221,7 +230,9 @@ export default function LoginModal({ show, onClose }) {
               <div className="mb-3">
                 <label className="form-label d-flex justify-content-between">
                   <span>Password</span>
-                  <a className="cm-muted" href="/forgot">Forgot?</a>
+                  <a className="cm-muted" href="/forgot">
+                    Forgot?
+                  </a>
                 </label>
                 <input
                   name="password"
@@ -239,7 +250,10 @@ export default function LoginModal({ show, onClose }) {
               <button className="cm-primary" type="submit" disabled={loading}>
                 {loading ? (
                   <>
-                    <span className="spinner-border spinner-border-sm me-2" role="status" />
+                    <span
+                      className="spinner-border spinner-border-sm me-2"
+                      role="status"
+                    />
                     Signing in...
                   </>
                 ) : (
@@ -248,15 +262,18 @@ export default function LoginModal({ show, onClose }) {
               </button>
             </form>
 
-           <div className="text-center mt-3">
-  <p className="mb-0">
-    New here?{" "}
-    <a href="/signup" className="btn btn-sm btn-outline-info ms-2 px-3 py-1" role="button">
-      Create an account
-    </a>
-  </p>
-</div>
-
+            <div className="text-center mt-3">
+              <p className="mb-0">
+                New here?{" "}
+                <a
+                  href="/signup"
+                  className="btn btn-sm btn-outline-info ms-2 px-3 py-1"
+                  role="button"
+                >
+                  Create an account
+                </a>
+              </p>
+            </div>
           </div>
 
           {/* RIGHT: oauth + info */}
@@ -269,7 +286,15 @@ export default function LoginModal({ show, onClose }) {
                 onClick={() => openOAuth("google")}
                 aria-label="Continue with Google"
               >
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="me-2" viewBox="0 0 16 16" aria-hidden>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  fill="currentColor"
+                  className="me-2"
+                  viewBox="0 0 16 16"
+                  aria-hidden
+                >
                   <path d="M8.159 7.37v1.02H12.4c-.2 1.08-1.06 2.85-4.24 2.85-2.56 0-4.64-2.11-4.64-4.72 0-2.61 2.08-4.72 4.64-4.72 1.45 0 2.42.62 2.98 1.15l.7-.7C11.01 1.78 9.66 1.2 8.15 1.2 4.55 1.2 1.84 3.98 1.84 7.44c0 3.46 2.71 6.24 6.31 6.24 3.64 0 6.02-2.56 6.02-6.16 0-.41-.04-.72-.1-1.08H8.159z" />
                 </svg>
                 Continue with Google
@@ -280,17 +305,25 @@ export default function LoginModal({ show, onClose }) {
                 onClick={() => openOAuth("github")}
                 aria-label="Continue with GitHub"
               >
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="me-2" viewBox="0 0 16 16" aria-hidden>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  fill="currentColor"
+                  className="me-2"
+                  viewBox="0 0 16 16"
+                  aria-hidden
+                >
                   <path d="M8 0C3.58 0 0 3.58 0 8a8 8 0 005.47 7.59c.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2 .37-2.53-.5-2.69-.96-.09-.23-.48-.96-.82-1.15-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.2 1.87.86 2.33.66.07-.52.28-.86.51-1.06-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82A7.63 7.63 0 018 4.7c.68.003 1.36.092 2 .27 1.53-1.03 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.28.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8 8 0 0016 8c0-4.42-3.58-8-8-8z" />
                 </svg>
                 Continue with GitHub
               </button>
-
-              
             </div>
           </div>
 
-          <button className="cm-close" aria-label="Close" onClick={onClose}>✕</button>
+          <button className="cm-close" aria-label="Close" onClick={onClose}>
+            ✕
+          </button>
         </div>
       </div>
     </>

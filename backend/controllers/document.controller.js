@@ -119,7 +119,7 @@ const restoreVersion = async (req, res, next) => {
     doc.latestVersion = newVersion._id;
     await doc.save();
 
-    // analytics: record restore as an edit/version action
+     
     try {
       await analytics.pushActivity({ workspaceId: doc.workspace, docId: doc._id, userId: req.user.userId, action: 'restore_version', meta: { restoredVersion: versionId } });
       await analytics.incEdits(doc.workspace, req.user.userId, doc._id, 1);
@@ -169,5 +169,5 @@ export {
   listVersions,
   restoreVersion,
   deleteDocument,
-  listDocumentsByWorkspace // export new function
+  listDocumentsByWorkspace  
 };

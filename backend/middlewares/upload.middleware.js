@@ -1,7 +1,7 @@
 import multer from 'multer';
 
 
-const storage = multer.memoryStorage(); // small files only; for big files use streaming
+const storage = multer.memoryStorage();  
 const upload = multer({
 storage,
 limits: { fileSize: parseInt(process.env.MAX_UPLOAD_BYTES || '10485760') }, // default 10MB

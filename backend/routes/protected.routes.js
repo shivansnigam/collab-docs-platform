@@ -10,7 +10,7 @@ router.get("/profile", authMiddleware, async (req, res) => {
   try {
     const user = await User.findById(req.user.userId).select("-password -__v");
     if (!user) return res.status(404).json({ message: "User not found" });
-    return res.json({ user }); // returns { user: { _id, name, email, roles, provider, ... } }
+    return res.json({ user }); 
   } catch (err) {
     console.error(err);
     return res.status(500).json({ message: "Server error" });

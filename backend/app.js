@@ -14,7 +14,7 @@ import analyticsRoutes from './routes/analytics.routes.js';
 import notificationRoutes from './routes/notification.routes.js';
 import commentRoutes from "./routes/comment.routes.js";
 
-// ✅ small import for Postman / quick test endpoint
+
 import { sendEmail } from "./lib/email.js";
 
 const app = express();

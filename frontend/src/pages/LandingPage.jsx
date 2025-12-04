@@ -5,7 +5,6 @@ export default function LandingPage({ onAutoShow }) {
   const timerRef = useRef();
 
   useEffect(() => {
-    // 60 seconds ke baad login modal auto open karna
     timerRef.current = setTimeout(() => onAutoShow?.(), 60000);
     return () => clearTimeout(timerRef.current);
   }, [onAutoShow]);
@@ -179,9 +178,12 @@ export default function LandingPage({ onAutoShow }) {
           {/* LEFT: HERO */}
           <div>
             <div className="fade-up stagger-1">
-              <h1 className="hero-title">Realtime collaborative documents for teams</h1>
+              <h1 className="hero-title">
+                Realtime collaborative documents for teams
+              </h1>
               <p className="hero-sub">
-                Rapidly create workspaces, edit together live, share files and track versions. Built secure, designed for productivity.
+                Rapidly create workspaces, edit together live, share files and
+                track versions. Built secure, designed for productivity.
               </p>
 
               <div className="lp-badges">
@@ -196,27 +198,44 @@ export default function LandingPage({ onAutoShow }) {
                   Sign in · Try demo
                 </button>
 
-                <a className="btn-outline" href="/signup">Create account</a>
+                <a className="btn-outline" href="/signup">
+                  Create account
+                </a>
               </div>
 
               <p style={{ marginTop: 16, color: "rgba(220,230,255,0.6)" }}>
-                Tip: Login modal will open automatically after 60 seconds on this page.
+                Tip: Login modal will open automatically after 60 seconds on
+                this page.
               </p>
             </div>
 
             {/* FEATURES quick */}
-            <div style={{ display:"grid", gridTemplateColumns: "repeat(2,1fr)", gap: 10, marginTop: 22 }} className="fade-up stagger-2">
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(2,1fr)",
+                gap: 10,
+                marginTop: 22,
+              }}
+              className="fade-up stagger-2"
+            >
               <div style={{ background: "transparent", padding: 12 }}>
-                <strong>Realtime edits</strong><div className="muted">Low latency syncing with CRDT/OT support</div>
+                <strong>Realtime edits</strong>
+                <div className="muted">
+                  Low latency syncing with CRDT/OT support
+                </div>
               </div>
               <div style={{ background: "transparent", padding: 12 }}>
-                <strong>Permissions</strong><div className="muted">Admin, Editor, Viewer roles</div>
+                <strong>Permissions</strong>
+                <div className="muted">Admin, Editor, Viewer roles</div>
               </div>
               <div style={{ background: "transparent", padding: 12 }}>
-                <strong>File uploads</strong><div className="muted">Images, PDFs via signed URLs</div>
+                <strong>File uploads</strong>
+                <div className="muted">Images, PDFs via signed URLs</div>
               </div>
               <div style={{ background: "transparent", padding: 12 }}>
-                <strong>Analytics</strong><div className="muted">Active users, edits, uploads</div>
+                <strong>Analytics</strong>
+                <div className="muted">Active users, edits, uploads</div>
               </div>
             </div>
           </div>
@@ -224,15 +243,19 @@ export default function LandingPage({ onAutoShow }) {
           {/* RIGHT: Preview card */}
           <div className="card fade-up">
             <h3>Live demo preview</h3>
-            <div className="muted">Open a workspace, create a page and see realtime updates.</div>
+            <div className="muted">
+              Open a workspace, create a page and see realtime updates.
+            </div>
 
             <div className="doc-row" style={{ marginTop: 14 }}>
               <div className="doc-item">
-                <strong>Workspace</strong><br />
+                <strong>Workspace</strong>
+                <br />
                 <small className="muted">Team Alpha</small>
               </div>
               <div className="doc-item">
-                <strong>Document</strong><br />
+                <strong>Document</strong>
+                <br />
                 <small className="muted">Project plan</small>
               </div>
             </div>
@@ -242,7 +265,7 @@ export default function LandingPage({ onAutoShow }) {
                 <div className="mock-line long" />
                 <div className="mock-line mid" />
                 <div className="mock-line short" />
-                <div style={{ flex:1 }} />
+                <div style={{ flex: 1 }} />
                 <div className="mock-line mid" />
               </div>
 
@@ -256,16 +279,32 @@ export default function LandingPage({ onAutoShow }) {
             </div>
 
             <div style={{ display: "flex", gap: 8, marginTop: 12 }}>
-              <button onClick={() => onAutoShow?.()} className="btn-primary" style={{ flex:1 }}>
+              <button
+                onClick={() => onAutoShow?.()}
+                className="btn-primary"
+                style={{ flex: 1 }}
+              >
                 Open login
               </button>
-              <a className="btn-outline" href="/workspaces" style={{ alignSelf:"center", padding:"10px 12px" }}>
+              <a
+                className="btn-outline"
+                href="/workspaces"
+                style={{ alignSelf: "center", padding: "10px 12px" }}
+              >
                 Explore
               </a>
             </div>
 
-            <div style={{ marginTop: 12, color: "rgba(170,190,220,0.7)", fontSize: 12 }}>
-              <small>Secure by default • GDPR friendly • Production ready</small>
+            <div
+              style={{
+                marginTop: 12,
+                color: "rgba(170,190,220,0.7)",
+                fontSize: 12,
+              }}
+            >
+              <small>
+                Secure by default • GDPR friendly • Production ready
+              </small>
             </div>
           </div>
         </div>

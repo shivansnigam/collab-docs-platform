@@ -37,7 +37,7 @@ export function socketHandler(io, socket) {
         roles: user.roles
       };
 
-      // ⭐ NEW: join personal user room so server can emit per-user notifications
+       
       try {
         const userRoom = `user:${socket.data.user.id}`;
         socket.join(userRoom);
@@ -119,7 +119,7 @@ export function socketHandler(io, socket) {
     );
   });
 
-  // CURSOR UPDATE
+   
   socket.on('cursor:update', (payload) => {
     const { docId, selection } = payload || {};
     if (!docId) return;
@@ -135,7 +135,7 @@ export function socketHandler(io, socket) {
     });
   });
 
-  // ✅ FIXED TYPING EVENT (NAME + USERID MUST SEND)
+   
   socket.on('typing', (payload) => {
     const { docId, isTyping, userId, name } = payload || {};
     if (!docId) return;

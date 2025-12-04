@@ -761,3 +761,73 @@ body {
   color: #9aaac3;
   font-size: 12px;
 }
+/* ===== Document editor TipTap image fix (no overflow, card-sized) ===== */
+
+.tiptap-editor-shell {
+  max-height: 520px;        
+  overflow-y: auto;
+  overflow-x: hidden;       
+}
+
+/* ProseMirror = TipTap ka inner editor */
+.tiptap-editor-shell .ProseMirror {
+  min-height: 420px;
+  padding: 10px 12px;
+}
+
+ 
+.tiptap-editor-shell .ProseMirror img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  max-height: 320px;        
+  margin: 8px auto;
+  border-radius: 10px;
+}
+/* same column for image + next text */
+.tiptap-editor-shell .ProseMirror > * {
+  max-width: 590px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* image as block */
+.tiptap-editor-shell .ProseMirror img {
+  
+  height: auto;
+  max-height: 330px;
+  border-radius: 10px;
+  margin-bottom: 14px;
+}
+@media print {
+  /* hide full UI */
+  header,
+  nav,
+  .navbar,
+  .toolbar,
+  button,
+  .workspace,
+  .card-header,
+  .card-title,
+  .card-body > small,
+  .version-info,
+  .open-preview,
+  .split,
+  .save,
+  .logout,
+  .no-alerts {
+    display: none !important;
+  }
+
+  /* show only editor content */
+  .ProseMirror {
+    display: block;
+    color: black;
+    font-size: 16px;
+  }
+}
+@media print {
+  .print-btn {
+    display: none !important;
+  }
+}

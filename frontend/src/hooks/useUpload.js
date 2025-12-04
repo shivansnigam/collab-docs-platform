@@ -1,5 +1,10 @@
 import { useState } from "react";
-import { signUpload, proxyUpload, getSignedUrl, confirmUpload } from "../services/upload.service";
+import {
+  signUpload,
+  proxyUpload,
+  getSignedUrl,
+  confirmUpload,
+} from "../services/upload.service";
 
 /**
  * useUpload hook
@@ -11,7 +16,10 @@ export default function useUpload() {
   const [progress, setProgress] = useState(0);
   const [error, setError] = useState(null);
 
-  const uploadFile = async (file, { workspaceId = null, documentId = null } = {}) => {
+  const uploadFile = async (
+    file,
+    { workspaceId = null, documentId = null } = {}
+  ) => {
     setError(null);
     setProgress(0);
     setUploading(true);
@@ -23,7 +31,7 @@ export default function useUpload() {
         contentType: file.type || "application/octet-stream",
         size: file.size,
         workspaceId,
-        documentId
+        documentId,
       });
 
       const fileId = signResp.file?.id;
@@ -42,9 +50,9 @@ export default function useUpload() {
       const putResp = await fetch(uploadUrl, {
         method: "PUT",
         headers: {
-          "Content-Type": file.type || "application/octet-stream"
+          "Content-Type": file.type || "application/octet-stream",
         },
-        body: file
+        body: file,
       });
 
       if (!putResp.ok) {
@@ -62,7 +70,7 @@ export default function useUpload() {
           storageKey: storageKey || undefined,
           workspaceId: workspaceId || undefined,
           documentId: documentId || undefined,
-          size: file.size || undefined
+          size: file.size || undefined,
         };
         const confirmResp = await confirmUpload(confirmPayload);
 
@@ -70,7 +78,10 @@ export default function useUpload() {
         if (confirmResp && confirmResp.url) {
           setProgress(100);
           setUploading(false);
-          return { file: confirmResp.file || signResp.file, url: confirmResp.url };
+          return {
+            file: confirmResp.file || signResp.file,
+            url: confirmResp.url,
+          };
         }
 
         // defensive fallback: if confirm didn't return url, try getSignedUrl
@@ -100,7 +111,10 @@ export default function useUpload() {
         throw confirmErr;
       }
     } catch (err) {
-      console.warn("Presign+PUT+confirm failed, trying proxy fallback:", err?.message || err);
+      console.warn(
+        "Presign+PUT+confirm failed, trying proxy fallback:",
+        err?.message || err
+      );
       // fallback: server-proxy upload via FormData (multer -> S3)
       try {
         const fd = new FormData();

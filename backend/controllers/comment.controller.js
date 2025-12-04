@@ -1,7 +1,10 @@
+// controllers/comment.controller.js
 import Comment from "../models/Comment.js";
 import Document from "../models/Document.js";
 import Workspace from "../models/Workspace.js";
+import User from "../models/User.js";
 import { createNotification } from "../services/notification.service.js";
+import { incComments } from "../services/analytics.service.js";   // ✅ NEW
 
 export const createComment = async (req, res, next) => {
   try {
@@ -16,15 +19,26 @@ export const createComment = async (req, res, next) => {
     const workspace = await Workspace.findById(doc.workspace);
     if (!workspace) return res.status(404).json({ message: "Workspace not found" });
 
-    // create comment
+    // comment create
     const comment = await Comment.create({
       workspace: workspace._id,
       document: doc._id,
       user: req.user.userId,
-      text
+      text,
     });
 
-    // notify document author (if not same person)
+     
+    let actorName = "Someone";
+    try {
+      const actor = await User.findById(req.user.userId).select("name email");
+      if (actor) {
+        actorName = actor.name || actor.email || "Someone";
+      }
+    } catch (e) {
+      // ignore
+    }
+
+    // notification to document author
     if (String(doc.author) !== String(req.user.userId)) {
       await createNotification({
         workspaceId: workspace._id,
@@ -33,10 +47,17 @@ export const createComment = async (req, res, next) => {
         recipientId: doc.author,
         type: "comment",
         title: "New comment on your document",
-        body: text,
-        meta: { commentId: comment._id }
+        body: `${actorName}: ${text}`,
+        meta: {
+          commentId: comment._id,
+          actorName,
+          commentText: text,
+        },
       });
     }
+
+     
+    await incComments(workspace._id, req.user.userId, doc._id, 1);
 
     return res.status(201).json({ comment });
   } catch (err) {

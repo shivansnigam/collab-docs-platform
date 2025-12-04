@@ -4,7 +4,16 @@ import User from '../models/User.js';
 import { getIo } from '../socket/io.js';
 import { sendEmail } from '../lib/email.js';
 
-export const createNotification = async ({ workspaceId, documentId, actorId, recipientId, type, title, body, meta = {} }) => {
+export const createNotification = async ({
+  workspaceId,
+  documentId,
+  actorId,
+  recipientId,
+  type,
+  title,
+  body,
+  meta = {}
+}) => {
   const notif = await Notification.create({
     workspace: workspaceId || null,
     document: documentId || null,
@@ -21,12 +30,9 @@ export const createNotification = async ({ workspaceId, documentId, actorId, rec
   let delivered = false;
   try {
     if (io) {
-      // we assume you join sockets to rooms like `user:<userId>`
       const room = `user:${recipientId.toString()}`;
-      // check clients in that room
       const clients = io.sockets.adapter.rooms.get(room) || new Set();
       if (clients.size > 0) {
-        // emit to that room
         io.to(room).emit('notification', { notification: notif });
         delivered = true;
         await Notification.findByIdAndUpdate(notif._id, { deliveredToClient: true });
@@ -36,7 +42,7 @@ export const createNotification = async ({ workspaceId, documentId, actorId, rec
     console.error('notification.service: socket deliver failed', e);
   }
 
-  // Email fallback if not delivered or user prefers email (simple: send if not delivered)
+  // Email fallback if not delivered
   try {
     const recipient = await User.findById(recipientId).select('email name');
     if (recipient && recipient.email && !delivered) {
@@ -54,10 +60,17 @@ export const createNotification = async ({ workspaceId, documentId, actorId, rec
 };
 
 export const listNotificationsForUser = async (userId, { limit = 50 } = {}) => {
-  return Notification.find({ recipient: userId }).sort({ createdAt: -1 }).limit(limit).lean();
+  return Notification.find({ recipient: userId })
+    .sort({ createdAt: -1 })
+    .limit(limit)
+    .lean();
 };
 
 export const markAsRead = async (notifId, userId) => {
-  const n = await Notification.findOneAndUpdate({ _id: notifId, recipient: userId }, { read: true }, { new: true });
+  const n = await Notification.findOneAndUpdate(
+    { _id: notifId, recipient: userId },
+    { read: true },
+    { new: true }
+  );
   return n;
 };

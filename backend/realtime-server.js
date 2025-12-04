@@ -24,7 +24,7 @@ const start = async () => {
       maxHttpBufferSize: 1e6
     });
 
-    // ⭐ NEW LINE — set io globally so notifications work everywhere
+     
     setIo(io);
 
     io.on('connection', (socket) => socketHandler(io, socket));

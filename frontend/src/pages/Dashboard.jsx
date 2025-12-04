@@ -118,11 +118,6 @@ export default function Dashboard() {
               <strong>Roles:</strong> {(user?.roles || []).join(", ")}
             </p>
           </div>
-          <div>
-            <button className="btn btn-outline-danger" onClick={logout}>
-              Logout
-            </button>
-          </div>
         </div>
 
         <hr />

@@ -7,7 +7,7 @@ const TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OTJlY2YzNDUx
 const DOC_ID = "692ecfc9510eaa638da3f21b";
 const workspaceId = "692ecf70510eaa638da3f214";
 
-// ✅ yahi sahi URL hai – realtime server pe jao, FRONTEND_URL mat use karo
+
 const REALTIME_URL = `http://localhost:${process.env.REALTIME_PORT || 1234}`;
 
 console.log("Connecting to:", REALTIME_URL);

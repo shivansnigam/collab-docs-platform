@@ -7,7 +7,7 @@ const router = express.Router();
 
 router.use(authMiddleware);
 
-// Get analytics for workspace id
+ 
 router.get('/workspace/:id', getWorkspaceAnalyticsHandler);
 
 export default router;

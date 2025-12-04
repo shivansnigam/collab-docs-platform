@@ -1,6 +1,8 @@
 // controllers/analytics.controller.js
 import { getWorkspaceAnalytics } from '../services/analytics.service.js';
 import Workspace from '../models/Workspace.js';
+import Document from '../models/Document.js';
+import Comment from '../models/Comment.js';
 
 export const getWorkspaceAnalyticsHandler = async (req, res, next) => {
   try {
@@ -16,8 +18,25 @@ export const getWorkspaceAnalyticsHandler = async (req, res, next) => {
     const isMember = ws.members.some(m => String(m.user) === String(userId));
     if (!isOwner && !isMember) return res.status(403).json({ message: 'Forbidden' });
 
+  
     const data = await getWorkspaceAnalytics(id, { activitiesLimit: 20 });
-    return res.json({ ...data });
+
+   
+    const docs = await Document.find({ workspace: id }).select('_id').lean();
+    const docIds = docs.map(d => d._id);
+
+    let commentsCount = 0;
+    if (docIds.length > 0) {
+      commentsCount = await Comment.countDocuments({
+        document: { $in: docIds }
+      });
+    }
+
+    
+    return res.json({
+      ...data,
+      commentsCount
+    });
   } catch (err) {
     next(err);
   }

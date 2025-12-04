@@ -47,7 +47,9 @@ export default function Workspaces() {
     if (!showCreate) return;
     const prev = document.body.style.overflow;
     document.body.style.overflow = "hidden";
-    return () => { document.body.style.overflow = prev; };
+    return () => {
+      document.body.style.overflow = prev;
+    };
   }, [showCreate]);
 
   // close modal on Escape
@@ -64,10 +66,16 @@ export default function Workspaces() {
       <div className="d-flex justify-content-between align-items-center mb-3">
         <h3>Workspaces</h3>
         <div>
-          <button className="btn btn-outline-primary me-2" onClick={fetchWorkspaces}>
+          <button
+            className="btn btn-outline-primary me-2"
+            onClick={fetchWorkspaces}
+          >
             Refresh
           </button>
-          <button className="btn btn-primary" onClick={() => setShowCreate(true)}>
+          <button
+            className="btn btn-primary"
+            onClick={() => setShowCreate(true)}
+          >
             + New Workspace
           </button>
         </div>
@@ -83,12 +91,19 @@ export default function Workspaces() {
                 <div className="card-body d-flex flex-column">
                   <h6 className="card-title fs-5 fw-semibold">{ws.name}</h6>
 
-                  <p className="mb-3 fs-6">{ws.description || "No description"}</p>
+                  <p className="mb-3 fs-6">
+                    {ws.description || "No description"}
+                  </p>
 
                   <div className="mt-auto d-flex justify-content-between align-items-center">
-                    <small className="fw-medium fs-6">Members: {ws.members?.length || 0}</small>
+                    <small className="fw-medium fs-6">
+                      Members: {ws.members?.length || 0}
+                    </small>
 
-                    <button className="btn btn-sm btn-primary" onClick={() => nav(`/workspaces/${ws._id}`)}>
+                    <button
+                      className="btn btn-sm btn-primary"
+                      onClick={() => nav(`/workspaces/${ws._id}`)}
+                    >
                       Open
                     </button>
                   </div>
@@ -106,7 +121,9 @@ export default function Workspaces() {
           role="dialog"
           aria-modal="true"
           aria-labelledby="sx-ws-title"
-          onClick={(e) => { if (e.target === e.currentTarget) setShowCreate(false); }}
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setShowCreate(false);
+          }}
         >
           <div className="sx-dark-modal-wrap">
             <div className="sx-dark-modal-card" role="document">
@@ -119,13 +136,23 @@ export default function Workspaces() {
               </button>
 
               <header className="sx-dark-header">
-                <h4 id="sx-ws-title" className="sx-dark-title">Create workspace</h4>
-                <p className="sx-dark-sub">Quickly create a workspace for your team</p>
+                <h4 id="sx-ws-title" className="sx-dark-title">
+                  Create workspace
+                </h4>
+                <p className="sx-dark-sub">
+                  Quickly create a workspace for your team
+                </p>
               </header>
 
-              <form onSubmit={create} className="sx-dark-form" autoComplete="off">
+              <form
+                onSubmit={create}
+                className="sx-dark-form"
+                autoComplete="off"
+              >
                 <div className="sx-field">
-                  <label className="sx-label" htmlFor="sx-ws-name">Name</label>
+                  <label className="sx-label" htmlFor="sx-ws-name">
+                    Name
+                  </label>
                   <input
                     id="sx-ws-name"
                     className="sx-input"
@@ -137,7 +164,9 @@ export default function Workspaces() {
                 </div>
 
                 <div className="sx-field">
-                  <label className="sx-label" htmlFor="sx-ws-desc">Description</label>
+                  <label className="sx-label" htmlFor="sx-ws-desc">
+                    Description
+                  </label>
                   <input
                     id="sx-ws-desc"
                     className="sx-input"
@@ -155,7 +184,9 @@ export default function Workspaces() {
                     Cancel
                   </button>
 
-                  <button type="submit" className="sx-btn sx-primary">Create</button>
+                  <button type="submit" className="sx-btn sx-primary">
+                    Create
+                  </button>
                 </div>
               </form>
             </div>

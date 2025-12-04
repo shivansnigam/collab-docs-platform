@@ -5,10 +5,10 @@ const requireWorkspaceMember = async (req, res, next) => {
   try {
     // safe access with optional chaining
     const workspaceId =
-      req.params?.workspaceId ||      // e.g. /workspaces/:workspaceId/...
-      req.body?.workspaceId ||        // body se
-      req.params?.id ||               // e.g. /workspaces/:id
-      req.query?.workspaceId;         // ✅ query string se ?workspaceId=...
+      req.params?.workspaceId ||       
+      req.body?.workspaceId ||         
+      req.params?.id ||                
+      req.query?.workspaceId;          
 
     if (!workspaceId) {
       return res.status(400).json({ message: "Workspace id missing" });
@@ -35,7 +35,7 @@ const requireWorkspaceMember = async (req, res, next) => {
         .json({ message: "Forbidden: not a workspace member" });
     }
 
-    // attach for controllers
+     
     req.workspace = workspace;
     next();
   } catch (err) {

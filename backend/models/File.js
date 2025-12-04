@@ -10,7 +10,7 @@ storageKey: { type: String, required: true, unique: true },
 mime: { type: String },
 size: { type: Number },
 status: { type: String, enum: ['pending','uploaded','processing','failed'], default: 'pending' },
-publicUrl: { type: String }, // optional cached public URL (if you want)
+publicUrl: { type: String },  
 thumbnails: [{ url: String, width: Number, height: Number }],
 meta: { type: mongoose.Schema.Types.Mixed },
 expiresAt: { type: Date }

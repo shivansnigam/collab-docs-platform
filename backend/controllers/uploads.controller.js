@@ -4,11 +4,11 @@ import File from '../models/File.js';
 import { getPresignedPutUrl, getPresignedGetUrl, s3 } from '../lib/s3Client.js';
 import { PutObjectCommand, HeadObjectCommand } from '@aws-sdk/client-s3';
 import { nanoid } from 'nanoid';
-import * as analytics from '../services/analytics.service.js'; // <-- added for analytics tracking
+import * as analytics from '../services/analytics.service.js';  
 
 const BUCKET = process.env.S3_BUCKET;
 
-// 1) Generate presigned PUT URL (frontend → direct upload to S3)
+ 
 export const signUpload = async (req, res, next) => {
   try {
     const { filename, contentType, size, workspaceId, documentId } = req.body;
@@ -81,7 +81,7 @@ export const proxyUpload = async (req, res, next) => {
       console.error('analytics.proxyUpload error', e);
     }
 
-    // optional: return presigned GET for immediate display
+     
     const getUrl = await getPresignedGetUrl(BUCKET, storageKey, parseInt(process.env.S3_PRESIGN_EXPIRES || '300'));
 
     return res.status(201).json({ file: fileDoc, url: getUrl });

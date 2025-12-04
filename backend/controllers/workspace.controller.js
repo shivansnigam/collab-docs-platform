@@ -13,12 +13,14 @@ const createWorkspace = async (req, res, next) => {
       name: name.trim(),
       description: description || "",
       owner: ownerId,
-      // keep owner also in members if you want them listed as Admin inside members,
-      // but we'll filter duplicate when returning so UI doesn't show owner twice.
       members: [{ user: ownerId, role: "Admin" }]
     });
 
-    // prepare response without duplicating owner in members list
+    // FIX: make owner also admin in global user roles
+    await User.findByIdAndUpdate(ownerId, {
+      $addToSet: { roles: "Admin" }
+    });
+
     const workspaceObj = ws.toObject();
     workspaceObj.members = workspaceObj.members.filter(
       (m) => String(m.user) !== String(workspaceObj.owner)
@@ -63,7 +65,7 @@ const getWorkspaceById = async (req, res, next) => {
     if (!workspace) return res.status(404).json({ message: "Workspace not found" });
 
     const wsObj = workspace.toObject();
-    // remove owner from members so UI shows owner only in owner section
+     
     wsObj.members = (wsObj.members || []).filter(m => String(m.user._id || m.user) !== String(wsObj.owner._id || wsObj.owner));
 
     return res.json({ workspace: wsObj });

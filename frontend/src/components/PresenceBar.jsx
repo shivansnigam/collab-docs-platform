@@ -17,9 +17,15 @@ export default function PresenceBar({ presence = [] }) {
     presence.forEach((p) => {
       // support both top-level fields and nested `user`
       const nestedUser = p.user || null;
-      const userId = p.userId || nestedUser?.id || nestedUser?.userId || p.id || null;
+      const userId =
+        p.userId || nestedUser?.id || nestedUser?.userId || p.id || null;
       const socketId = p.socketId || nestedUser?.socketId || null;
-      const key = userId || socketId || p.id || socketId || Math.random().toString(36).slice(2, 9);
+      const key =
+        userId ||
+        socketId ||
+        p.id ||
+        socketId ||
+        Math.random().toString(36).slice(2, 9);
 
       if (!map.has(key)) map.set(key, { key, sockets: [] });
 
@@ -27,7 +33,12 @@ export default function PresenceBar({ presence = [] }) {
       map.get(key).sockets.push({
         socketId,
         userId,
-        name: p.name || nestedUser?.name || nestedUser?.user?.name || p.user?.name || undefined,
+        name:
+          p.name ||
+          nestedUser?.name ||
+          nestedUser?.user?.name ||
+          p.user?.name ||
+          undefined,
         isTyping: !!p.isTyping,
         selection: p.selection || null,
       });
@@ -56,9 +67,14 @@ export default function PresenceBar({ presence = [] }) {
   }, [presence]);
 
   return (
-    <div style={{ display: "flex", gap: 12, alignItems: "center", marginLeft: 12 }}>
+    <div
+      style={{ display: "flex", gap: 12, alignItems: "center", marginLeft: 12 }}
+    >
       {grouped.map((u) => (
-        <div key={u.key} style={{ display: "flex", alignItems: "center", gap: 8 }}>
+        <div
+          key={u.key}
+          style={{ display: "flex", alignItems: "center", gap: 8 }}
+        >
           <div
             style={{
               width: 10,
@@ -69,9 +85,13 @@ export default function PresenceBar({ presence = [] }) {
             }}
           />
 
-          <div style={{ display: "flex", flexDirection: "column", lineHeight: 1 }}>
+          <div
+            style={{ display: "flex", flexDirection: "column", lineHeight: 1 }}
+          >
             <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-              <small style={{ color: "#e6eef8", fontWeight: 600, fontSize: 13 }}>
+              <small
+                style={{ color: "#e6eef8", fontWeight: 600, fontSize: 13 }}
+              >
                 {u.name.length > 12 ? u.name.slice(0, 12) + "…" : u.name}
               </small>
 
@@ -90,7 +110,9 @@ export default function PresenceBar({ presence = [] }) {
               )}
 
               {u.isTyping && (
-                <small style={{ fontSize: 12, color: "#60a5fa", marginLeft: 6 }}>
+                <small
+                  style={{ fontSize: 12, color: "#60a5fa", marginLeft: 6 }}
+                >
                   {u.name} is typing…
                 </small>
               )}
@@ -99,7 +121,10 @@ export default function PresenceBar({ presence = [] }) {
             <div>
               {u.selection ? (
                 <small style={{ color: "#9aaac3", fontSize: 11 }}>
-                  cursor {typeof u.selection.from === "number" ? u.selection.from : "—"}
+                  cursor{" "}
+                  {typeof u.selection.from === "number"
+                    ? u.selection.from
+                    : "—"}
                 </small>
               ) : (
                 <small style={{ color: "#8897a6", fontSize: 11 }}>online</small>

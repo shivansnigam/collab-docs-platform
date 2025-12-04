@@ -5,9 +5,9 @@ import bcrypt from "bcryptjs";
 const userSchema = new mongoose.Schema({
   name: { type: String, trim: true },
   email: { type: String, required: true, unique: true, lowercase: true, trim: true },
-  password: { type: String }, // optional for OAuth users
+  password: { type: String },  
   roles: { type: [String], default: ["Viewer"], enum: ["Admin","Editor","Viewer"] },
-  provider: { type: String, default: "local" }, // local | google | github
+  provider: { type: String, default: "local" },  
   providerId: { type: String }
 }, { timestamps: true });
 

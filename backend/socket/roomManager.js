@@ -3,7 +3,7 @@ import Document from '../models/Document.js';
 
 export class RoomManager {
   constructor({ flushMs = 500 } = {}) {
-    this.rooms = new Map(); // docId -> { snapshot, version, buffer: [], clients: Map }
+    this.rooms = new Map();  
     this.timers = new Map();
     this.flushMs = flushMs;
   }
@@ -74,7 +74,7 @@ export class RoomManager {
     if (lastOp.delta && lastOp.delta.snapshot !== undefined) {
       newContent = lastOp.delta.snapshot;
     } else {
-      // if no snapshot provided, keep server snapshot (or implement merge logic)
+       
     }
 
     const newVersion = room.version;

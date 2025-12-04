@@ -10,7 +10,7 @@ export const createTransporter = () => {
       pass: process.env.SMTP_PASS
     },
     tls: {
-      rejectUnauthorized: false // dev purpose; remove in prod if you have valid certs
+      rejectUnauthorized: false  
     }
   });
 };

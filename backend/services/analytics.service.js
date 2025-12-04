@@ -100,7 +100,7 @@ export const incEdits = async (workspaceId, userId, docId, increment = 1) => {
   );
 
   if (!res) {
-    // push new date bucket
+     
     await WorkspaceAnalytics.findOneAndUpdate(
       { workspace: workspaceId },
       { 

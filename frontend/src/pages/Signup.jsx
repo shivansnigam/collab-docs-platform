@@ -14,7 +14,6 @@ export default function Signup() {
   const [error, setError] = useState("");
   const nav = useNavigate();
 
-  // ✅ NEW: already logged-in user ko yahan aane nahi dena
   useEffect(() => {
     const token = getAccessToken();
     if (token) {

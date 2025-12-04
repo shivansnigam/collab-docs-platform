@@ -5,7 +5,11 @@ const USER_KEY = "app_user";
 export const getAccessToken = () => localStorage.getItem(ACCESS_KEY);
 export const getRefreshToken = () => localStorage.getItem(REFRESH_KEY);
 export const getUser = () => {
-  try { return JSON.parse(localStorage.getItem(USER_KEY)); } catch { return null; }
+  try {
+    return JSON.parse(localStorage.getItem(USER_KEY));
+  } catch {
+    return null;
+  }
 };
 
 export const setTokens = (accessToken, refreshToken, user) => {

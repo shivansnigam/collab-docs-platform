@@ -1,33 +1,43 @@
+// src/services/api.js
 import axios from "axios";
-import { getAccessToken, getRefreshToken, setTokens, clearTokens } from "./auth.service";
+import {
+  getAccessToken,
+  getRefreshToken,
+  setTokens,
+  clearTokens,
+} from "./auth.service";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api/v1";
 
 const api = axios.create({
   baseURL: API_URL,
   withCredentials: false,
-  headers: { "Content-Type": "application/json" }
+  headers: { "Content-Type": "application/json" },
 });
 
-api.interceptors.request.use(cfg => {
-  const token = getAccessToken();
-  if (token) cfg.headers.Authorization = `Bearer ${token}`;
-  return cfg;
-}, err => Promise.reject(err));
+api.interceptors.request.use(
+  (cfg) => {
+    const token = getAccessToken();
+    if (token) cfg.headers.Authorization = `Bearer ${token}`;
+    return cfg;
+  },
+  (err) => Promise.reject(err)
+);
 
 let isRefreshing = false;
 let failedQueue = [];
 
 const processQueue = (error, tokens) => {
-  failedQueue.forEach(p => (error ? p.reject(error) : p.resolve(tokens)));
+  failedQueue.forEach((p) => (error ? p.reject(error) : p.resolve(tokens)));
   failedQueue = [];
 };
 
 api.interceptors.response.use(
-  res => res,
-  async error => {
+  (res) => res,
+  async (error) => {
     const originalRequest = error.config;
-    if (!originalRequest || originalRequest._retry) return Promise.reject(error);
+    if (!originalRequest || originalRequest._retry)
+      return Promise.reject(error);
 
     if (error.response && error.response.status === 401) {
       originalRequest._retry = true;
@@ -36,11 +46,11 @@ api.interceptors.response.use(
         return new Promise(function (resolve, reject) {
           failedQueue.push({ resolve, reject });
         })
-          .then(tokens => {
+          .then((tokens) => {
             originalRequest.headers.Authorization = `Bearer ${tokens.accessToken}`;
             return api(originalRequest);
           })
-          .catch(err => Promise.reject(err));
+          .catch((err) => Promise.reject(err));
       }
 
       isRefreshing = true;
@@ -52,7 +62,9 @@ api.interceptors.response.use(
       }
 
       try {
-        const resp = await axios.post(`${API_URL}/auth/refresh`, { refreshToken });
+        const resp = await axios.post(`${API_URL}/auth/refresh`, {
+          refreshToken,
+        });
         const { accessToken, refreshToken: newRefresh } = resp.data;
         // keep user if exists
         const user = JSON.parse(localStorage.getItem("app_user") || "null");
@@ -72,5 +84,9 @@ api.interceptors.response.use(
     return Promise.reject(error);
   }
 );
+
+export const fetchMyNotifications = () => api.get("/notifications");
+export const markNotificationAsRead = (id) =>
+  api.post(`/notifications/${id}/read`);
 
 export default api;

@@ -2,7 +2,17 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { getWorkspaceAnalytics } from "../services/analytics.service";
-import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, BarChart, Bar } from "recharts";
+import {
+  ResponsiveContainer,
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  Tooltip,
+  CartesianGrid,
+  BarChart,
+  Bar,
+} from "recharts";
 import api from "../services/api";
 
 export default function AnalyticsPage() {
@@ -36,8 +46,22 @@ export default function AnalyticsPage() {
   }, [workspaceId]);
 
   // prepare series for charts
-  const editsSeries = useMemo(() => (analytics?.dailyEdits || []).map(d => ({ date: d.date, count: d.count })), [analytics]);
-  const uploadsSeries = useMemo(() => (analytics?.dailyUploads || []).map(d => ({ date: d.date, count: d.count })), [analytics]);
+  const editsSeries = useMemo(
+    () =>
+      (analytics?.dailyEdits || []).map((d) => ({
+        date: d.date,
+        count: d.count,
+      })),
+    [analytics]
+  );
+  const uploadsSeries = useMemo(
+    () =>
+      (analytics?.dailyUploads || []).map((d) => ({
+        date: d.date,
+        count: d.count,
+      })),
+    [analytics]
+  );
 
   if (loading)
     return (
@@ -58,8 +82,18 @@ export default function AnalyticsPage() {
       <div className="d-flex justify-content-between align-items-center mb-3">
         <h4>Workspace Analytics</h4>
         <div>
-          <button className="btn btn-outline-secondary me-2" onClick={() => load()}>Refresh</button>
-          <button className="btn btn-outline-primary" onClick={() => nav(`/workspaces/${workspaceId}`)}>Back</button>
+          <button
+            className="btn btn-outline-secondary me-2"
+            onClick={() => load()}
+          >
+            Refresh
+          </button>
+          <button
+            className="btn btn-outline-primary"
+            onClick={() => nav(`/workspaces/${workspaceId}`)}
+          >
+            Back
+          </button>
         </div>
       </div>
 
@@ -67,25 +101,33 @@ export default function AnalyticsPage() {
         <div className="col-md-3 mb-2">
           <div className="card p-3">
             <div className=" small">Active users</div>
-            <div style={{ fontSize: 22, fontWeight: 700 }}>{analytics?.activeUsersCount ?? 0}</div>
+            <div style={{ fontSize: 22, fontWeight: 700 }}>
+              {analytics?.activeUsersCount ?? 0}
+            </div>
           </div>
         </div>
         <div className="col-md-3 mb-2">
           <div className="card p-3">
             <div className=" small">Total edits</div>
-            <div style={{ fontSize: 22, fontWeight: 700 }}>{analytics?.editsCount ?? 0}</div>
+            <div style={{ fontSize: 22, fontWeight: 700 }}>
+              {analytics?.editsCount ?? 0}
+            </div>
           </div>
         </div>
         <div className="col-md-3 mb-2">
           <div className="card p-3">
             <div className=" small">Comments</div>
-            <div style={{ fontSize: 22, fontWeight: 700 }}>{analytics?.commentsCount ?? 0}</div>
+            <div style={{ fontSize: 22, fontWeight: 700 }}>
+              {analytics?.commentsCount ?? 0}
+            </div>
           </div>
         </div>
         <div className="col-md-3 mb-2">
           <div className="card p-3">
             <div className=" small">File uploads</div>
-            <div style={{ fontSize: 22, fontWeight: 700 }}>{analytics?.uploadsCount ?? 0}</div>
+            <div style={{ fontSize: 22, fontWeight: 700 }}>
+              {analytics?.uploadsCount ?? 0}
+            </div>
           </div>
         </div>
       </div>
@@ -103,7 +145,13 @@ export default function AnalyticsPage() {
                   <XAxis dataKey="date" />
                   <YAxis />
                   <Tooltip />
-                  <Line type="monotone" dataKey="count" stroke="#1976d2" strokeWidth={2} dot={{ r: 2 }} />
+                  <Line
+                    type="monotone"
+                    dataKey="count"
+                    stroke="#1976d2"
+                    strokeWidth={2}
+                    dot={{ r: 2 }}
+                  />
                 </LineChart>
               </ResponsiveContainer>
             )}
@@ -137,19 +185,30 @@ export default function AnalyticsPage() {
         ) : (
           <ul style={{ listStyle: "none", paddingLeft: 0, margin: 0 }}>
             {activities.map((a) => (
-              <li key={a._id} style={{ borderBottom: "1px solid #eee", padding: "10px 0" }}>
+              <li
+                key={a._id}
+                style={{ borderBottom: "1px solid #eee", padding: "10px 0" }}
+              >
                 <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
                   <div style={{ minWidth: 220 }}>
                     <div style={{ fontWeight: 700 }}>{a.action}</div>
-                    <div className="text-muted" style={{ fontSize: 13 }}>{a.user?.name || "System"}</div>
+                    <div className="text-muted" style={{ fontSize: 13 }}>
+                      {a.user?.name || "System"}
+                    </div>
                   </div>
                   <div style={{ flex: 1 }}>
                     <div style={{ color: "#334155" }}>
                       {a.document?.title ? `${a.document.title}` : ""}
                     </div>
-                    <div style={{ color: "#64748b", fontSize: 13 }}>{a.meta && Object.keys(a.meta).length ? JSON.stringify(a.meta) : ""}</div>
+                    <div style={{ color: "#64748b", fontSize: 13 }}>
+                      {a.meta && Object.keys(a.meta).length
+                        ? JSON.stringify(a.meta)
+                        : ""}
+                    </div>
                   </div>
-                  <div style={{ color: "#94a3b8", fontSize: 13 }}>{new Date(a.createdAt).toLocaleString()}</div>
+                  <div style={{ color: "#94a3b8", fontSize: 13 }}>
+                    {new Date(a.createdAt).toLocaleString()}
+                  </div>
                 </div>
               </li>
             ))}

@@ -9,9 +9,9 @@ import api from "../services/api";
  */
 function buildTree(items = []) {
   const map = {};
-  items.forEach(i => (map[i._id] = { ...i, children: [] }));
+  items.forEach((i) => (map[i._id] = { ...i, children: [] }));
   const roots = [];
-  items.forEach(i => {
+  items.forEach((i) => {
     if (i.parent) {
       if (map[i.parent]) map[i.parent].children.push(map[i._id]);
       else roots.push(map[i._id]); // fallback if parent missing
@@ -24,7 +24,7 @@ function buildTree(items = []) {
   const sortFn = (a, b) => (a.title || "").localeCompare(b.title || "");
   const sortTree = (nodes) => {
     nodes.sort(sortFn);
-    nodes.forEach(n => n.children && sortTree(n.children));
+    nodes.forEach((n) => n.children && sortTree(n.children));
   };
   sortTree(roots);
   return roots;
@@ -41,7 +41,9 @@ const TreeNode = ({ node, level = 0, onOpen, selectedId }) => {
     marginBottom: 6,
     borderRadius: 6,
     background: isSelected ? "rgba(13,110,253,0.08)" : "transparent",
-    borderLeft: isSelected ? "3px solid rgba(13,110,253,0.9)" : "3px solid transparent"
+    borderLeft: isSelected
+      ? "3px solid rgba(13,110,253,0.9)"
+      : "3px solid transparent",
   };
 
   return (
@@ -49,8 +51,14 @@ const TreeNode = ({ node, level = 0, onOpen, selectedId }) => {
       <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
         {hasChildren ? (
           <button
-            onClick={() => setOpen(v => !v)}
-            style={{ width: 22, background: "transparent", border: 0, color: "inherit", cursor: "pointer" }}
+            onClick={() => setOpen((v) => !v)}
+            style={{
+              width: 22,
+              background: "transparent",
+              border: 0,
+              color: "inherit",
+              cursor: "pointer",
+            }}
             aria-label="toggle"
             type="button"
             title={open ? "Collapse" : "Expand"}
@@ -73,25 +81,44 @@ const TreeNode = ({ node, level = 0, onOpen, selectedId }) => {
             display: "flex",
             alignItems: "center",
             gap: 8,
-            width: "100%"
+            width: "100%",
           }}
           title={node.title || "Untitled"}
           type="button"
         >
-          <span style={{ maxWidth: 220, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", display: "inline-block", fontWeight: isSelected ? 600 : 500 }}>
+          <span
+            style={{
+              maxWidth: 220,
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap",
+              display: "inline-block",
+              fontWeight: isSelected ? 600 : 500,
+            }}
+          >
             {node.title || "Untitled"}
           </span>
-          <small style={{ color: "#8fa3bf", marginLeft: 8 }}>{node.tags?.length ? `• ${node.tags.join(", ")}` : ""}</small>
+          <small style={{ color: "#8fa3bf", marginLeft: 8 }}>
+            {node.tags?.length ? `• ${node.tags.join(", ")}` : ""}
+          </small>
           <div style={{ marginLeft: "auto", fontSize: 12, color: "#9aaac3" }}>
-            {node.updatedAt || node.createdAt ? new Date(node.updatedAt || node.createdAt).toLocaleDateString() : ""}
+            {node.updatedAt || node.createdAt
+              ? new Date(node.updatedAt || node.createdAt).toLocaleDateString()
+              : ""}
           </div>
         </button>
       </div>
 
       {open && hasChildren && (
         <div style={{ marginTop: 6 }}>
-          {node.children.map(ch => (
-            <TreeNode key={ch._id} node={ch} level={level + 1} onOpen={onOpen} selectedId={selectedId} />
+          {node.children.map((ch) => (
+            <TreeNode
+              key={ch._id}
+              node={ch}
+              level={level + 1}
+              onOpen={onOpen}
+              selectedId={selectedId}
+            />
           ))}
         </div>
       )}
@@ -114,9 +141,10 @@ export default function WorkspaceTree({ workspaceId }) {
   useEffect(() => {
     if (!workspaceId) return;
     setLoading(true);
-    api.get("/documents", { params: { workspaceId } })
-      .then(res => setDocs(res.data.documents || res.data || []))
-      .catch(err => {
+    api
+      .get("/documents", { params: { workspaceId } })
+      .then((res) => setDocs(res.data.documents || res.data || []))
+      .catch((err) => {
         console.error("WorkspaceTree load error:", err);
         setDocs([]);
       })
@@ -132,9 +160,21 @@ export default function WorkspaceTree({ workspaceId }) {
 
   return (
     <div>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          marginBottom: 8,
+        }}
+      >
         <strong>Pages</strong>
-        <button className="btn btn-sm btn-outline-primary" onClick={() => nav(`/workspaces/${workspaceId}/newpage`)}>+ New</button>
+        <button
+          className="btn btn-sm btn-outline-primary"
+          onClick={() => nav(`/workspaces/${workspaceId}/newpage`)}
+        >
+          + New
+        </button>
       </div>
 
       {loading ? (
@@ -142,7 +182,16 @@ export default function WorkspaceTree({ workspaceId }) {
       ) : tree.length === 0 ? (
         <div style={{ color: "#9aaac3" }}>No pages yet.</div>
       ) : (
-        <div>{tree.map(n => <TreeNode key={n._id} node={n} onOpen={handleOpen} selectedId={selectedId} />)}</div>
+        <div>
+          {tree.map((n) => (
+            <TreeNode
+              key={n._id}
+              node={n}
+              onOpen={handleOpen}
+              selectedId={selectedId}
+            />
+          ))}
+        </div>
       )}
     </div>
   );

@@ -5,12 +5,34 @@ const REALTIME = import.meta.env.VITE_REALTIME_URL || "http://localhost:1234";
 
 let socket = null;
 
+let notificationSubscribers = [];
+
+/**
+ * kisi bhi component ko realtime notification sunna ho:
+ * const unsubscribe = subscribeToNotifications((payload)=> { ... })
+ */
+export function subscribeToNotifications(cb) {
+  if (typeof cb !== "function") return () => {};
+  notificationSubscribers.push(cb);
+  return () => {
+    notificationSubscribers = notificationSubscribers.filter((fn) => fn !== cb);
+  };
+}
+
 /**
  * connectSocket(options)
  * options: { token, onConnect, onInit, onDocUpdate, onPresence, onCursor, onTyping }
  * onTyping will be called for 'presence:typing' or 'typing' events from server
  */
-export function connectSocket({ token, onConnect, onInit, onDocUpdate, onPresence, onCursor, onTyping }) {
+export function connectSocket({
+  token,
+  onConnect,
+  onInit,
+  onDocUpdate,
+  onPresence,
+  onCursor,
+  onTyping,
+} = {}) {
   if (socket && socket.connected) return socket;
 
   socket = io(REALTIME, { autoConnect: true });
@@ -28,10 +50,20 @@ export function connectSocket({ token, onConnect, onInit, onDocUpdate, onPresenc
   socket.on("presence:typing", (t) => onTyping?.(t));
   socket.on("typing", (t) => onTyping?.(t));
 
-  socket.on("disconnect", () => { /* optional cleanup */ });
+  socket.on("notification", (data) => {
+    notificationSubscribers.forEach((fn) => {
+      try {
+        fn(data);
+      } catch (e) {
+        // ignore handler errors
+      }
+    });
+  });
 
-  // helper emit wrappers
-  // ✅ FIX: forward workspaceId from wrapper to server
+  socket.on("disconnect", () => {
+    // optional cleanup, abhi kuch nahi
+  });
+
   socket.joinDoc = ({ token, docId, workspaceId }) =>
     socket.emit("join", { token, docId, workspaceId });
 
@@ -50,4 +82,6 @@ export function disconnectSocket() {
   socket = null;
 }
 
-export function getSocket() { return socket; }
+export function getSocket() {
+  return socket;
+}

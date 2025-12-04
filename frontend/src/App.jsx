@@ -8,17 +8,14 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import NavBar from "./components/NavBar";
 import LoginModal from "./components/LoginModal";
 import { getAccessToken } from "./services/auth.service";
-
 // Added imports for workspaces/documents pages
 import Workspaces from "./pages/Workspaces";
 import WorkspacePage from "./pages/WorkspacePage";
 import DocumentEditor from "./pages/DocumentEditor";
 import DocumentVersions from "./pages/DocumentVersions";
 import NewPage from "./pages/NewPage"; // NEW
-
 // <-- ADDED: analytics page import
 import AnalyticsPage from "./pages/Analytics";
-
 // <-- ADDED: Landing page import
 import LandingPage from "./pages/LandingPage";
 
@@ -31,7 +28,6 @@ export default function App() {
     const onRoot = location.pathname === "/" || location.pathname === "/login";
 
     if (!token && onRoot) {
-      // Delay (ms) — 60000 = 60s. Agar chaho kam/zyada kar sakte ho.
       const timer = setTimeout(() => setShowLoginModal(true), 4000);
       return () => clearTimeout(timer);
     }
@@ -40,11 +36,17 @@ export default function App() {
   return (
     <>
       <NavBar onLoginClick={() => setShowLoginModal(true)} />
-      <LoginModal show={showLoginModal} onClose={() => setShowLoginModal(false)} />
+      <LoginModal
+        show={showLoginModal}
+        onClose={() => setShowLoginModal(false)}
+      />
       <div className="container mt-4">
         <Routes>
           {/* Root ab LandingPage dikhayega; LandingPage onAutoShow se modal open karwa sakta hai */}
-          <Route path="/" element={<LandingPage onAutoShow={() => setShowLoginModal(true)} />} />
+          <Route
+            path="/"
+            element={<LandingPage onAutoShow={() => setShowLoginModal(true)} />}
+          />
 
           <Route path="/signup" element={<Signup />} />
           <Route path="/oauth-success" element={<OAuthSuccess />} />

@@ -5,7 +5,8 @@ import api from "../services/api";
 import { marked } from "marked";
 
 /* ===== helpers ===== */
-const removeHtmlHeaderMarker = (s = "") => s.replace(/^\s*html\s*=+\s*/i, "").trim();
+const removeHtmlHeaderMarker = (s = "") =>
+  s.replace(/^\s*html\s*=+\s*/i, "").trim();
 const escapeHtml = (str = "") =>
   str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 const stripTags = (html = "") => html.replace(/<\/?[^>]+(>|$)/g, "");
@@ -88,7 +89,9 @@ export default function DocumentVersions() {
 
     win.document.open();
     win.document.write(
-      `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${escapeHtml(v.title || "Preview")}</title><style>${css}</style></head><body>
+      `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${escapeHtml(
+        v.title || "Preview"
+      )}</title><style>${css}</style></head><body>
         <div class="controls" role="toolbar" aria-label="preview controls">
           <button id="openNew">Open in new window</button>
           <button id="printBtn">Print</button>
@@ -113,7 +116,12 @@ export default function DocumentVersions() {
   };
 
   const restore = async (versionId) => {
-    if (!confirm("Restore this version? This will create a new version with restored content.")) return;
+    if (
+      !confirm(
+        "Restore this version? This will create a new version with restored content."
+      )
+    )
+      return;
     try {
       await api.post(`/documents/${id}/versions/${versionId}/restore`);
       alert("Restored. Re-opening document.");
@@ -132,7 +140,9 @@ export default function DocumentVersions() {
         <div className="spinner-border" />
       ) : (
         <div className="list-group">
-          {versions.length === 0 && <div className="alert alert-secondary">No versions found.</div>}
+          {versions.length === 0 && (
+            <div className="alert alert-secondary">No versions found.</div>
+          )}
 
           {versions.map((v) => (
             <div
@@ -151,10 +161,14 @@ export default function DocumentVersions() {
             >
               {/* left: text */}
               <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ display: "flex", alignItems: "baseline", gap: 10 }}>
+                <div
+                  style={{ display: "flex", alignItems: "baseline", gap: 10 }}
+                >
                   <strong style={{ wordBreak: "break-word" }}>{v.title}</strong>
                 </div>
-                <div className="text-muted small" style={{ marginTop: 4 }}>{new Date(v.createdAt).toLocaleString()}</div>
+                <div className="text-muted small" style={{ marginTop: 4 }}>
+                  {new Date(v.createdAt).toLocaleString()}
+                </div>
 
                 <div style={{ marginTop: 10 }}>
                   <small
@@ -177,9 +191,21 @@ export default function DocumentVersions() {
               </div>
 
               {/* right: actions */}
-              <div style={{ display: "flex", flexDirection: "column", gap: 8, marginLeft: 12 }}>
-                
-                <button className="btn btn-sm btn-danger" style={{ minWidth: 92 }} onClick={() => restore(v._id)}>Restore</button>
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: 8,
+                  marginLeft: 12,
+                }}
+              >
+                <button
+                  className="btn btn-sm btn-danger"
+                  style={{ minWidth: 92 }}
+                  onClick={() => restore(v._id)}
+                >
+                  Restore
+                </button>
               </div>
             </div>
           ))}
