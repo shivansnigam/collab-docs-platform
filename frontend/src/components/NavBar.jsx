@@ -355,7 +355,7 @@ export default function NavBar({ onLoginClick }) {
                       <div className="nb-dd-list">
                         {notifications.length === 0 ? (
                           <div className="nb-dd-empty">
-                            Abhi koi notification nahi hai.
+                            No new notifications
                           </div>
                         ) : (
                           notifications.map((n) => (
