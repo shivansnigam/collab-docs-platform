@@ -1174,7 +1174,7 @@ body {
   z-index: 5000;
 }
 @media (max-width: 640px) {
-  /* Top header: title + Refresh/Back */
+ 
   .container .d-flex.justify-content-between.align-items-center.mb-3 {
     flex-direction: column;
     align-items: flex-start;
@@ -1197,7 +1197,7 @@ body {
     font-size: 13px;
   }
 
-  /* Stats + charts cards spacing */
+ 
   .row.mb-3 .col-md-3,
   .row.mb-4 .col-md-6 {
     width: 100%;
@@ -1208,7 +1208,7 @@ body {
     margin-bottom: 8px;
   }
 
-  /* Recent activity list layout */
+  
   .card ul li > div {
     flex-direction: column;
     align-items: flex-start;
