@@ -1169,3 +1169,58 @@ body {
     padding: 10px 14px;
   }
 }
+.sx-dark-modal-backdrop,
+.wp-sx-modal-backdrop {
+  z-index: 5000;
+}
+@media (max-width: 640px) {
+  /* Top header: title + Refresh/Back */
+  .container .d-flex.justify-content-between.align-items-center.mb-3 {
+    flex-direction: column;
+    align-items: flex-start;
+    row-gap: 8px;
+  }
+
+  .container .d-flex.justify-content-between.align-items-center.mb-3 > h4 {
+    font-size: 22px;
+  }
+
+  .container .d-flex.justify-content-between.align-items-center.mb-3 > div {
+    display: flex;
+    width: 100%;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .container .d-flex.justify-content-between.align-items-center.mb-3 > div .btn {
+    padding: 6px 12px;
+    font-size: 13px;
+  }
+
+  /* Stats + charts cards spacing */
+  .row.mb-3 .col-md-3,
+  .row.mb-4 .col-md-6 {
+    width: 100%;
+  }
+
+  .row.mb-3 .card,
+  .row.mb-4 .card {
+    margin-bottom: 8px;
+  }
+
+  /* Recent activity list layout */
+  .card ul li > div {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+
+  .card ul li > div > div {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .card ul li > div > div:last-child {
+    margin-top: 2px;
+  }
+}
