@@ -1,12 +1,14 @@
 // src/components/NavBar.jsx
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { getUser, clearTokens } from "../services/auth.service";
 import { fetchMyNotifications, markNotificationAsRead } from "../services/api";
 import {
   connectSocket,
   subscribeToNotifications,
 } from "../services/realtime.service";
+import api from "../services/api";
+import { searchDocuments } from "../services/document.service";
 
 export default function NavBar({ onLoginClick }) {
   const [user, setUser] = useState(() => getUser());
@@ -15,11 +17,33 @@ export default function NavBar({ onLoginClick }) {
   const [unreadCount, setUnreadCount] = useState(0);
   const [open, setOpen] = useState(false);
 
+  const [workspaces, setWorkspaces] = useState([]);
+  const [activeWorkspaceId, setActiveWorkspaceId] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
+  const [searchLoading, setSearchLoading] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
+
+  const nav = useNavigate();
+
   const logout = () => {
     clearTokens();
     window.location.href = "/";
   };
 
+  const getCleanSnippet = (raw) => {
+    if (!raw) return "No preview";
+
+    let text = String(raw);
+    text = text.replace(/<img[^>]*>/gi, " ");
+    text = text.replace(/<[^>]+>/g, " ");
+    text = text.replace(/src="[^"]*"/gi, " ");
+    text = text.replace(/https?:\/\/\S+/gi, " ");
+    text = text.replace(/\s+/g, " ").trim();
+
+    if (!text) return "No preview";
+    return text.length > 80 ? text.slice(0, 80) + "..." : text;
+  };
 
   useEffect(() => {
     if (user) return;
@@ -33,6 +57,28 @@ export default function NavBar({ onLoginClick }) {
     }, 300);
 
     return () => clearInterval(id);
+  }, [user]);
+
+  useEffect(() => {
+    if (!user) return;
+
+    const loadWorkspaces = async () => {
+      try {
+        const resp = await api.get("/workspaces");
+        const ws = resp.data.workspaces || resp.data || [];
+        setWorkspaces(ws);
+        if (!activeWorkspaceId && ws.length > 0) {
+          setActiveWorkspaceId(ws[0]._id);
+        }
+      } catch (err) {
+        console.error(
+          "navbar load workspaces error:",
+          err?.response?.data || err
+        );
+      }
+    };
+
+    loadWorkspaces();
   }, [user]);
 
   useEffect(() => {
@@ -116,6 +162,51 @@ export default function NavBar({ onLoginClick }) {
     if (notif.type === "mention") return "You were mentioned";
     if (notif.type === "share") return "Document shared with you";
     return "Notification";
+  };
+
+  const runSearch = async (query, workspaceId) => {
+    if (!query.trim() || !workspaceId) {
+      setSearchResults([]);
+      return;
+    }
+    try {
+      setSearchLoading(true);
+      const resp = await searchDocuments({
+        workspaceId,
+        q: query.trim(),
+        page: 1,
+        limit: 10,
+      });
+      setSearchResults(resp.data.documents || []);
+      setSearchOpen(true);
+    } catch (err) {
+      console.error("navbar search error:", err?.response?.data || err);
+      setSearchResults([]);
+    } finally {
+      setSearchLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (!searchQuery.trim()) {
+      setSearchResults([]);
+      setSearchOpen(false);
+      return;
+    }
+    if (!activeWorkspaceId) return;
+
+    const t = setTimeout(() => {
+      runSearch(searchQuery, activeWorkspaceId);
+    }, 400);
+
+    return () => clearTimeout(t);
+  }, [searchQuery, activeWorkspaceId]);
+
+  const handleResultClick = (doc) => {
+    setSearchOpen(false);
+    setSearchQuery("");
+    setSearchResults([]);
+    nav(`/documents/${doc._id}`);
   };
 
   return (
@@ -325,6 +416,137 @@ export default function NavBar({ onLoginClick }) {
           font-size: 11px;
           color: #6b7280;
         }
+
+        .nb-search-wrap {
+          position: relative;
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          margin-right: 12px;
+          z-index: 3500;
+        }
+
+        .nb-search-select {
+          background: rgba(15,23,42,0.9);
+          border-radius: 999px;
+          border: 1px solid rgba(148,163,184,0.7);
+          color: #e5e7eb;
+          font-size: 12px;
+          padding: 4px 10px;
+          max-width: 160px;
+        }
+
+        .nb-search-input {
+          background: rgba(15,23,42,0.9);
+          border-radius: 999px;
+          border: 1px solid rgba(148,163,184,0.7);
+          color: #e5e7eb;
+          font-size: 13px;
+          padding: 6px 12px;
+          min-width: 190px;
+          outline: none;
+        }
+
+        .nb-search-input::placeholder {
+          color: #9ca3af;
+        }
+
+        .nb-search-dd {
+          position: absolute;
+          top: 110%;
+          right: 0;
+          left: auto;
+          width: 420px;
+          max-width: min(420px, 80vw);
+          max-height: 380px;
+          background: rgba(15,23,42,0.98);
+          border-radius: 12px;
+          box-shadow: 0 18px 40px rgba(0,0,0,0.6);
+          border: 1px solid rgba(148,163,184,0.35);
+          overflow-y: auto;
+          z-index: 3800;
+        }
+
+        .nb-search-item {
+          padding: 8px 12px;
+          cursor: pointer;
+        }
+
+        .nb-search-item:hover {
+          background: rgba(31,41,55,0.95);
+        }
+
+        .nb-search-title {
+          font-size: 13px;
+          font-weight: 600;
+          color: #e5e7eb;
+          margin-bottom: 2px;
+        }
+
+        .nb-search-snippet {
+          font-size: 12px;
+          color: #9ca3af;
+          margin-top: 2px;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+        .nb-search-meta {
+          font-size: 11px;
+          color: #6b7280;
+          margin-top: 2px;
+        }
+
+        .nb-search-empty {
+          padding: 10px 12px;
+          font-size: 12px;
+          color: #9ca3af;
+        }
+
+        @media (max-width: 768px) {
+          .nb-search-wrap {
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-right: 0;
+          }
+          .nb-search-select {
+            max-width: 140px;
+          }
+          .nb-search-input {
+            min-width: 160px;
+          }
+          .nb-search-dd {
+            left: 0;
+            right: 0;
+            width: 100%;
+            max-width: 100%;
+          }
+        }
+
+        @media (max-width: 640px) {
+          .nb-container {
+            flex-wrap: wrap;
+            row-gap: 8px;
+          }
+          .nb-search-wrap {
+            order: 3;
+            width: 100%;
+            justify-content: flex-start;
+          }
+          .nb-search-select,
+          .nb-search-input {
+            width: 100%;
+            max-width: 100%;
+          }
+          .nb-search-dd {
+            top: 104%;
+            left: 0;
+            right: 0;
+            width: 100%;
+            max-width: 100%;
+          }
+        }
       `}</style>
 
       <div className="nb-root">
@@ -336,6 +558,70 @@ export default function NavBar({ onLoginClick }) {
           <div className="nb-right">
             {user ? (
               <>
+                {workspaces.length > 0 && (
+                  <div className="nb-search-wrap">
+                    <select
+                      className="nb-search-select"
+                      value={activeWorkspaceId}
+                      onChange={(e) => setActiveWorkspaceId(e.target.value)}
+                    >
+                      {workspaces.map((ws) => (
+                        <option key={ws._id} value={ws._id}>
+                          {ws.name}
+                        </option>
+                      ))}
+                    </select>
+
+                    <div style={{ position: "relative" }}>
+                      <input
+                        className="nb-search-input"
+                        placeholder="Search documents..."
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        onFocus={() => {
+                          if (searchResults.length > 0) setSearchOpen(true);
+                        }}
+                      />
+                      {searchOpen && (
+                        <div className="nb-search-dd">
+                          {searchLoading ? (
+                            <div className="nb-search-empty">
+                              Searching...
+                            </div>
+                          ) : searchResults.length === 0 ? (
+                            <div className="nb-search-empty">
+                              No documents found
+                            </div>
+                          ) : (
+                            searchResults.map((doc) => (
+                              <div
+                                key={doc._id}
+                                className="nb-search-item"
+                                onClick={() => handleResultClick(doc)}
+                              >
+                                <div className="nb-search-title">
+                                  {doc.title}
+                                </div>
+                                <div className="nb-search-snippet">
+                                  {getCleanSnippet(doc.snippet)}
+                                </div>
+                                <div className="nb-search-meta">
+                                  Updated:{" "}
+                                  {doc.updatedAt
+                                    ? new Date(
+                                        doc.updatedAt
+                                      ).toLocaleDateString()
+                                    : "-"}
+                                </div>
+                              </div>
+                            ))
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
+
                 <span className="nb-user">Hi, {user.name || user.email}</span>
 
                 <Link to="/dashboard" className="nb-nav-link">

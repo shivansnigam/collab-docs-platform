@@ -17,3 +17,9 @@ export const listVersions = (id) => api.get(`/documents/${id}/versions`);
 
 export const restoreVersion = (id, versionId) =>
   api.post(`/documents/${id}/versions/${versionId}/restore`);
+
+
+export const searchDocuments = ({ workspaceId, q, page = 1, limit = 10 }) =>
+  api.get("/documents/search", {
+    params: { workspaceId, q, page, limit },
+  });

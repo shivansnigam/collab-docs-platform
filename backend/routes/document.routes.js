@@ -9,16 +9,31 @@ import {
   listVersions,
   restoreVersion,
   deleteDocument,
-  listDocumentsByWorkspace
+  listDocumentsByWorkspace,
+  searchDocuments
 } from "../controllers/document.controller.js";
 
 const router = express.Router();
 
-// NEW: list documents by workspace via query ?workspaceId=<id>
+// list documents by workspace via query ?workspaceId=<id>
 router.get("/", authMiddleware, listDocumentsByWorkspace);
 
+// NEW: full text search within a workspace
+// GET /api/v1/documents/search?workspaceId=...&q=...&page=1&limit=10
+router.get(
+  "/search",
+  authMiddleware,
+  requireWorkspaceMember,
+  searchDocuments
+);
+
 // create document under a workspace
-router.post("/workspace/:workspaceId", authMiddleware, requireWorkspaceMember, createDocument);
+router.post(
+  "/workspace/:workspaceId",
+  authMiddleware,
+  requireWorkspaceMember,
+  createDocument
+);
 
 // document CRUD
 router.get("/:id", authMiddleware, getDocument);
