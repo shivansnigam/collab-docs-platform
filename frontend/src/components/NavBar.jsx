@@ -9,7 +9,7 @@ import {
 } from "../services/realtime.service";
 
 export default function NavBar({ onLoginClick }) {
-  const [user] = useState(() => getUser());
+  const [user, setUser] = useState(() => getUser());
 
   const [notifications, setNotifications] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
@@ -19,6 +19,21 @@ export default function NavBar({ onLoginClick }) {
     clearTokens();
     window.location.href = "/";
   };
+
+
+  useEffect(() => {
+    if (user) return;
+
+    const id = setInterval(() => {
+      const stored = getUser();
+      if (stored) {
+        setUser(stored);
+        clearInterval(id);
+      }
+    }, 300);
+
+    return () => clearInterval(id);
+  }, [user]);
 
   useEffect(() => {
     if (!user) return;
@@ -323,7 +338,6 @@ export default function NavBar({ onLoginClick }) {
               <>
                 <span className="nb-user">Hi, {user.name || user.email}</span>
 
-                {/* common dashboard link */}
                 <Link to="/dashboard" className="nb-nav-link">
                   Dashboard
                 </Link>
