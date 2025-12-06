@@ -1307,7 +1307,7 @@ body {
 .sx-dark-modal-backdrop {
   position: fixed;
   inset: 0;
-  z-index: 4000; /* pehle 2200 tha */
+  z-index: 4000;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1602,5 +1602,53 @@ body {
   .nb-btn {
     padding: 5px 12px !important;
     font-size: 12px !important;
+  }
+}
+@media (min-width: 1024px) {
+  .nb-right {
+    display: flex;
+    align-items: center;
+  }
+
+  .nb-user {
+    order: -2;
+    margin-left: 12px;
+    margin-right: 20px;
+    font-weight: 600;
+  }
+}
+
+.nb-nav-link,
+.nb-bell-btn,
+.nb-btn,
+.nb-search-select,
+.nb-search-input {
+  font-size: 13px;
+  line-height: 1;
+  height: 40px;
+  padding: 0 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
+.nb-user {
+  font-size: 13px;
+}
+
+@media (max-width: 640px) {
+  .nb-nav-link,
+  .nb-bell-btn,
+  .nb-btn,
+  .nb-search-select,
+  .nb-search-input {
+    font-size: 12px;
+    height: 38px;
+    padding: 0 14px;
+  }
+
+  .nb-user {
+    font-size: 12px;
   }
 }

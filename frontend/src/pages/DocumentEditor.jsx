@@ -408,15 +408,15 @@ export default function DocumentEditor() {
   }, [doc]);
 
   // auto refresh comments
-  useEffect(() => {
-    if (!doc || !doc._id || !id) return;
+  // useEffect(() => {
+  //   if (!doc || !doc._id || !id) return;
 
-    const interval = setInterval(() => {
-      loadComments();
-    }, 3000);
+  //   const interval = setInterval(() => {
+  //     loadComments();
+  //   }, 3000);
 
-    return () => clearInterval(interval);
-  }, [doc, id]);
+  //   return () => clearInterval(interval);
+  // }, [doc, id]);
 
   const doSave = useCallback(
     async (showToast = true) => {

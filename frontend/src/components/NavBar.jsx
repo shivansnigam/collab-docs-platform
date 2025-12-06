@@ -98,22 +98,22 @@ export default function NavBar({ onLoginClick }) {
     load();
   }, [user]);
 
-  useEffect(() => {
-    if (!user) return;
+  // useEffect(() => {
+  //   if (!user) return;
 
-    const interval = setInterval(async () => {
-      try {
-        const resp = await fetchMyNotifications();
-        const list = resp.data.notifications || [];
-        setNotifications(list);
-        setUnreadCount(list.filter((n) => !n.read).length);
-      } catch (e) {
-        console.error("poll notifications error", e?.response?.data || e);
-      }
-    }, 17000);
+  //   const interval = setInterval(async () => {
+  //     try {
+  //       const resp = await fetchMyNotifications();
+  //       const list = resp.data.notifications || [];
+  //       setNotifications(list);
+  //       setUnreadCount(list.filter((n) => !n.read).length);
+  //     } catch (e) {
+  //       console.error("poll notifications error", e?.response?.data || e);
+  //     }
+  //   }, 21000);
 
-    return () => clearInterval(interval);
-  }, [user]);
+  //   return () => clearInterval(interval);
+  // }, [user]);
 
   useEffect(() => {
     if (!user) return;
@@ -251,7 +251,7 @@ export default function NavBar({ onLoginClick }) {
 
         .nb-user {
           color: #e2e8f0;
-          font-size: 15px;
+          font-size: 16px;
           margin-right: 8px;
         }
 
@@ -431,7 +431,7 @@ export default function NavBar({ onLoginClick }) {
           border-radius: 999px;
           border: 1px solid rgba(148,163,184,0.7);
           color: #e5e7eb;
-          font-size: 12px;
+          font-size: 13px;
           padding: 4px 10px;
           max-width: 160px;
         }
@@ -585,9 +585,7 @@ export default function NavBar({ onLoginClick }) {
                       {searchOpen && (
                         <div className="nb-search-dd">
                           {searchLoading ? (
-                            <div className="nb-search-empty">
-                              Searching...
-                            </div>
+                            <div className="nb-search-empty">Searching...</div>
                           ) : searchResults.length === 0 ? (
                             <div className="nb-search-empty">
                               No documents found
