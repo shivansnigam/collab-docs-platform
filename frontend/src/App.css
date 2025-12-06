@@ -1579,3 +1579,19 @@ body {
     order: 1;
   }
 }
+@media (max-width: 600px) {
+  .nb-dropdown {
+    width: 90vw;
+    right: 5vw;
+    left: 5vw;
+    max-height: 60vh;
+  }
+
+  .nb-dd-item-title {
+    font-size: 12px;
+  }
+
+  .nb-dd-item-body {
+    font-size: 11px;
+  }
+}
