@@ -1595,3 +1595,12 @@ body {
     font-size: 11px;
   }
 }
+@media (max-width: 640px) {
+  .nb-right {
+    gap: 4px !important;
+  }
+  .nb-btn {
+    padding: 5px 12px !important;
+    font-size: 12px !important;
+  }
+}
