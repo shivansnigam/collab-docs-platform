@@ -1595,3 +1595,10 @@ body {
     font-size: 11px;
   }
 }
+@media (max-width: 480px) {
+  .nb-dropdown {
+    width: 95vw;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+}
