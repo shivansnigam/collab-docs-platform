@@ -1652,3 +1652,22 @@ body {
     font-size: 12px;
   }
 }
+
+.wp-sx-input,
+.wp-sx-input option {
+  background-color: #0b1220;
+  color: #e6eef8;
+}
+
+/* dropdown open list (Chrome/Edge) */
+.wp-sx-input:focus {
+  background-color: #0b1220;
+  color: #e6eef8;
+}
+
+/* option hover / selected */
+.wp-sx-input option:checked,
+.wp-sx-input option:hover {
+  background-color: #1e3a8a; /* soft blue */
+  color: #ffffff;
+}

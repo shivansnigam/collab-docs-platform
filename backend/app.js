@@ -13,6 +13,7 @@ import uploadsRoutes from './routes/uploads.routes.js';
 import analyticsRoutes from './routes/analytics.routes.js';
 import notificationRoutes from './routes/notification.routes.js';
 import commentRoutes from "./routes/comment.routes.js";
+import aiRoutes from "./ai/ai.routes.js";
 
 
 import { sendEmail } from "./lib/email.js";
@@ -35,6 +36,7 @@ app.use('/api/v1/uploads', uploadsRoutes);
 app.use("/api/v1/analytics", analyticsRoutes);
 app.use('/api/v1/notifications', notificationRoutes);
 app.use("/api/v1/comments", commentRoutes);
+app.use("/api/v1/ai", aiRoutes);
 
 /*
   Quick test route for sending email (used by Postman or local quick tests).

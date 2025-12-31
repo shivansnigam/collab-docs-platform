@@ -24,6 +24,8 @@ import TurndownService from "turndown";
 import debounce from "lodash.debounce";
 import { connectSocket, getSocket } from "../services/realtime.service";
 import PresenceBar from "../components/PresenceBar";
+import DocumentAI from "../components/DocumentAI";
+
 import useUpload from "../hooks/useUpload";
 // import { getSignedUrl as apiGetSignedUrl } from "../services/upload.service";
 
@@ -1164,63 +1166,47 @@ export default function DocumentEditor() {
       </div>
 
       <div
-        className="mb-2 d-flex flex-wrap align-items-center"
-        style={{ gap: 8 }}
-      >
-        <div className="d-flex flex-wrap">
-          <ToolbarButton
-            title="Bold (Ctrl/Cmd+B)"
-            onClick={toggleBold}
-            active={editor?.isActive("bold")}
-          >
-            <strong>B</strong>
-          </ToolbarButton>
-          <ToolbarButton
-            title="Italic (Ctrl/Cmd+I)"
-            onClick={toggleItalic}
-            active={editor?.isActive("italic")}
-          >
-            <em>I</em>
-          </ToolbarButton>
-          <ToolbarButton title="Inline code" onClick={toggleCode}>
-            <code>{`</>`}</code>
-          </ToolbarButton>
-          <ToolbarButton
-            title="Heading 1"
-            onClick={setH1}
-            active={editor?.isActive("heading", {
-              level: 1,
-            })}
-          >
-            H1
-          </ToolbarButton>
-          <ToolbarButton
-            title="Heading 2"
-            onClick={setH2}
-            active={editor?.isActive("heading", {
-              level: 2,
-            })}
-          >
-            H2
-          </ToolbarButton>
-          <ToolbarButton
-            title="Quote"
-            onClick={toggleQuote}
-            active={editor?.isActive("blockquote")}
-          >
-            “
-          </ToolbarButton>
-          <ToolbarButton title="Task list" onClick={toggleTask}>
-            ☑
-          </ToolbarButton>
-          <ToolbarButton title="Code block" onClick={insertCodeBlock}>
-            {"</>"}
-          </ToolbarButton>
-          <ToolbarButton title="Link" onClick={insertLink}>
-            🔗
-          </ToolbarButton>
+  className="mb-2 d-flex flex-wrap align-items-center"
+  style={{ gap: 8 }}
+>
+  <div className="d-flex flex-wrap align-items-center">
+    <ToolbarButton title="Bold" onClick={toggleBold}>
+      <strong>B</strong>
+    </ToolbarButton>
 
-          <ToolbarButton title="Upload image/file" onClick={onClickUpload}>
+    <ToolbarButton title="Italic" onClick={toggleItalic}>
+      <em>I</em>
+    </ToolbarButton>
+
+    <ToolbarButton title="Inline code" onClick={toggleCode}>
+      <code>{`</>`}</code>
+    </ToolbarButton>
+
+    <ToolbarButton title="Heading 1" onClick={setH1}>
+      H1
+    </ToolbarButton>
+
+    <ToolbarButton title="Heading 2" onClick={setH2}>
+      H2
+    </ToolbarButton>
+
+    <ToolbarButton title="Quote" onClick={toggleQuote}>
+      “
+    </ToolbarButton>
+
+    <ToolbarButton title="Task list" onClick={toggleTask}>
+      ☑
+    </ToolbarButton>
+
+    <ToolbarButton title="Code block" onClick={insertCodeBlock}>
+      {"</>"}
+    </ToolbarButton>
+
+    <ToolbarButton title="Link" onClick={insertLink}>
+      🔗
+    </ToolbarButton>
+
+    <ToolbarButton title="Upload image/file" onClick={onClickUpload}>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
               <path
                 d="M12 3v9"
@@ -1245,12 +1231,16 @@ export default function DocumentEditor() {
               />
             </svg>
           </ToolbarButton>
-        </div>
 
-        <div className="ms-auto text-muted small">
-          Autosave: 2s after changes
-        </div>
-      </div>
+    {/* 🔥 Ask AI button / component */}
+    <DocumentAI documentId={id} />
+  </div>
+
+  <div className="ms-auto text-muted small">
+    Autosave: 2s after changes
+  </div>
+</div>
+
 
       <input
         ref={fileInputRef}
