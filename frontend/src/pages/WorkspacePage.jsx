@@ -4,6 +4,7 @@ import api from "../services/api";
 import { useParams, useNavigate } from "react-router-dom";
 import WorkspaceTree from "../components/WorkspaceTree";
 import "../styles/workspace-tree.css";
+import { runWorkspaceAI } from "../services/analytics.service";
 
 function getUserName(user) {
   if (!user) return "";
@@ -43,6 +44,108 @@ function RoleBadge({ role }) {
     >
       {role}
     </span>
+  );
+}
+function WorkspaceAI({ workspaceId }) {
+  const [open, setOpen] = useState(false);
+  const [question, setQuestion] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [result, setResult] = useState("");
+
+  const askAI = async () => {
+    if (!question.trim()) return;
+    setLoading(true);
+    setResult("");
+    try {
+      const res = await runWorkspaceAI({ workspaceId, question });
+      setResult(res.result || "No response");
+    } catch {
+      setResult("AI failed to respond");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <>
+      <button className="btn btn-primary" onClick={() => setOpen(true)}>
+        Ask Workspace AI
+      </button>
+
+      {open && (
+        <div className="wp-sx-modal-backdrop">
+          <div className="wp-sx-modal-wrap">
+            <div className="wp-sx-modal-card">
+              <button
+                className="wp-sx-close"
+                onClick={() => setOpen(false)}
+                aria-label="Close"
+              >
+                ✕
+              </button>
+
+              <div className="wp-sx-header">
+                <h3 className="wp-sx-title">Workspace AI</h3>
+                <p className="wp-sx-sub">Ask questions about this workspace</p>
+              </div>
+
+              <div className="wp-sx-form">
+                <textarea
+                  className="wp-sx-input"
+                  rows={3}
+                  placeholder="Ask something about this workspace..."
+                  value={question}
+                  onChange={(e) => setQuestion(e.target.value)}
+                />
+                {/* helper text */}
+                <p className="wp-sx-helper">You can ask things like:</p>
+
+                {/* example prompts */}
+                <div className="wp-sx-examples">
+                  {[
+                    "Summarize this workspace",
+                    "What changed recently?",
+                    "Who is working on what?",
+                    "List important pages",
+                  ].map((q) => (
+                    <button
+                      key={q}
+                      type="button"
+                      className="wp-sx-example"
+                      onClick={() => setQuestion(q)}
+                    >
+                      {q}
+                    </button>
+                  ))}
+                </div>
+
+                <button
+                  className="wp-sx-btn wp-sx-primary"
+                  onClick={askAI}
+                  disabled={loading}
+                >
+                  {loading ? "Thinking..." : "Ask AI"}
+                </button>
+
+                {result && (
+                  <div
+                    className="card"
+                    style={{
+                      maxHeight: 260,
+                      overflow: "auto",
+                      fontSize: 14,
+                      whiteSpace: "pre-wrap",
+                    }}
+                  >
+                    {result}
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
   );
 }
 
@@ -164,6 +267,7 @@ export default function WorkspacePage() {
             >
               Analytics
             </button>
+            <WorkspaceAI workspaceId={id} />
 
             <button
               className="btn btn-primary"

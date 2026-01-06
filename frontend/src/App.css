@@ -1671,3 +1671,198 @@ body {
   background-color: #1e3a8a; /* soft blue */
   color: #ffffff;
 }
+/* ============================= */
+/* AI MODAL – DOC + WORKSPACE   */
+/* ============================= */
+
+/* backdrop */
+.wp-sx-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 5000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(
+    180deg,
+    rgba(2, 6, 23, 0.66),
+    rgba(2, 6, 23, 0.78)
+  );
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  padding: 20px;
+}
+
+/* wrapper */
+.wp-sx-modal-wrap {
+  width: 100%;
+  max-width: 560px;
+  padding: 8px;
+}
+
+/* modal card */
+.wp-sx-modal-card {
+  position: relative;
+  border-radius: 12px;
+  background: linear-gradient(
+    180deg,
+    rgba(6, 10, 20, 0.95),
+    rgba(8, 14, 28, 0.9)
+  );
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: 0 18px 50px rgba(2, 6, 23, 0.6);
+  padding: 22px;
+  color: #e6eef8;
+  animation: wpSxPop 0.22s ease;
+}
+
+/* close button */
+.wp-sx-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: transparent;
+  border: none;
+  color: #cbd5e1;
+  font-size: 16px;
+  padding: 6px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.wp-sx-close:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+/* header */
+.wp-sx-header {
+  margin-bottom: 10px;
+}
+.wp-sx-title {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+  color: #ffffff;
+}
+.wp-sx-sub {
+  margin-top: 4px;
+  font-size: 13px;
+  color: #9fb0c5;
+}
+
+/* form */
+.wp-sx-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* input / textarea / select */
+.wp-sx-input {
+  width: 100%;
+  min-height: 46px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.03);
+  color: #e6eef8;
+  font-size: 14px;
+  resize: none;
+}
+.wp-sx-input::placeholder {
+  color: rgba(230, 238, 248, 0.4);
+}
+.wp-sx-input:focus {
+  outline: none;
+  border-color: rgba(79, 140, 255, 0.9);
+  box-shadow: 0 0 0 2px rgba(79, 140, 255, 0.15);
+}
+
+/* buttons */
+.wp-sx-btn {
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 14px;
+  padding: 10px 14px;
+  cursor: pointer;
+  border: none;
+}
+
+.wp-sx-primary {
+  background: linear-gradient(
+    90deg,
+    rgba(79, 140, 255, 0.95),
+    rgba(124, 92, 255, 0.95)
+  );
+  color: #fff;
+  box-shadow: 0 8px 26px rgba(79, 140, 255, 0.18);
+}
+
+.wp-sx-ghost {
+  background: transparent;
+  color: #cfe6fb;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+/* result box */
+.wp-sx-result,
+.wp-sx-modal-card .card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 10px;
+  padding: 12px;
+  font-size: 14px;
+  color: #e5e7eb;
+}
+
+/* animation */
+@keyframes wpSxPop {
+  from {
+    transform: translateY(8px) scale(0.98);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+/* responsive */
+@media (max-width: 560px) {
+  .wp-sx-modal-card {
+    padding: 16px;
+  }
+  .wp-sx-title {
+    font-size: 18px;
+  }
+}
+/* helper text */
+.wp-sx-helper {
+  font-size: 13px;
+  color: #9fb0c5;
+  margin-top: 4px;
+}
+
+/* example prompt list */
+.wp-sx-examples {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+/* single example pill */
+.wp-sx-example {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: #cfe6fb;
+  font-size: 12px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.wp-sx-example:hover {
+  background: rgba(79, 140, 255, 0.18);
+  border-color: rgba(79, 140, 255, 0.4);
+}
+

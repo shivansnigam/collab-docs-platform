@@ -41,10 +41,37 @@ export const runDocumentAI = async ({ content, mode }) => {
   });
 
   const data = await response.json();
+  if (data.error) throw new Error(data.error.message);
 
-  if (data.error) {
-    throw new Error(data.error.message);
-  }
+  return data.choices?.[0]?.message?.content || "AI response empty";
+};
+
+export const runWorkspaceAI = async ({ context, question }) => {
+  const response = await fetch(GROQ_API_URL, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${process.env.GROQ_API_KEY}`,
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      model: "llama-3.1-8b-instant",
+      messages: [
+        {
+          role: "system",
+          content:
+            "You are a workspace AI assistant. Answer clearly using the provided workspace data. Do not assume anything outside the data."
+        },
+        {
+          role: "user",
+          content: `Workspace Data:\n${context}\n\nQuestion:\n${question}`
+        }
+      ],
+      temperature: 0.2
+    })
+  });
+
+  const data = await response.json();
+  if (data.error) throw new Error(data.error.message);
 
   return data.choices?.[0]?.message?.content || "AI response empty";
 };
